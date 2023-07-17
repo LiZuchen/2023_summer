@@ -3,7 +3,7 @@ from datetime import datetime
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
-
+#fafafa
 def MinMaxScaler_Single(data):
     '''
     :param data: list[]
