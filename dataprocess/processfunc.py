@@ -88,7 +88,7 @@ def longtail_modify_log(data):
         :param data: list
         :return: ndarray
     '''
-    data = np.asarray(data)
+    data = np.asarray(data )
     datanew=[]
     for datai in data:
         if(datai==0):
