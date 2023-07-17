@@ -14,7 +14,7 @@ def MinMaxScaler_Single(data):
     transfer=MinMaxScaler(feature_range=(0,1))   #rang范围可改变
     # #3)调用transform转换
     data_new=transfer.fit_transform(data.reshape(-1,1))
-    print(type(data_new))
+    print(type(data_new) )
     return data_new
 def sub_time2(date1,date2):
     date1 = datetime.strptime(date1, "%Y.%m.%d %H:%M:%S")
