@@ -91,7 +91,7 @@ def longtail_modify_log(data):
     data = np.asarray(data )
     datanew=[]
     for datai in data:
-        if(datai==0):
-            print("6zero",datai)
+        # if(datai==0):
+        #     # print("log时，该长尾分布数据出现了",datai)
         datanew.append(math.log((float)(datai+0.1),2))
     return np.asarray(datanew,'f').reshape(-1,1)
