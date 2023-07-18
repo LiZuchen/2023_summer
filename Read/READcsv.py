@@ -10,34 +10,10 @@ from sklearn.cluster import KMeans
 from matplotlib import pyplot
 from sklearn.preprocessing import MinMaxScaler
 from sklearn_extra.cluster import KMedoids
-
 from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinMaxScaler_Single, modifycol, \
     longtail_modify_log, longtail_modify
-
-filename="C:\\Users\\11858\\Desktop\\暑期\\data\\pure\\assigndata1518_2.csv"
-
-
-import pandas as pd
-
+# filename="C:\\Users\\11858\\Desktop\\暑期\\data\\pure\\assigndata1518_2.csv"
 import os
-
-from tqdm import tqdm
-
-# def get_data(path):
-#
-#     df_list = []
-#
-#     for file in tqdm(os.listdir(path)):##进度条
-#
-#         file_path = os.path.join(path, file)
-#
-#         df = pd.read_excel(file_path,)
-#
-#         df_list.append(df)
-#
-#         df = pd.concat(df_list)
-#     return df
-
 path = "C:\\Users\\11858\\Desktop\\暑期\\data\\pure"
 dirs = os.listdir(path)
 
@@ -79,12 +55,6 @@ for file in dirs:
     #            acrate(actimes(col["有效优化次数"], col["是否通过"]),submittimes=col["提交次数"])
     #            ]for col in reader if((col["题型"]=="编程题")&(col["提交次数"]!="-1"))]  #  同列的数据
         print("读入"+file+"后，当前总共的编程题提交记录数: ",len(column))
-
-
-
-for tmp in column:
-    if(tmp[6]=='0'):
-        print(tmp[0],tmp[1],"zero times submit")
 # print(column)
 #引入sklkearn中的归一化模块
 #归一化
