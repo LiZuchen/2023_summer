@@ -3,6 +3,7 @@ from datetime import datetime
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
+import CONTROL.Global
 from dataprocess.hash import HashMap
 
 
@@ -17,15 +18,8 @@ def MinMaxScaler_Single(data):
     transfer=MinMaxScaler(feature_range=(0,1))   #rang范围可改变
     # #3)调用transform转换
     data_new=transfer.fit_transform(data.reshape(-1,1))
-    print(type(data_new) )
     return data_new
-def sub_time2(date1,date2):
-    date1 = datetime.strptime(date1, "%Y.%m.%d %H:%M:%S")
-    date2 = datetime.strptime(date2, "%Y.%m.%d %H:%M:%S")
-    print(" date1:", date1, "\n" ,"date2:", date2)
-    print(" 2个日期的类型分别是:\n", type(date1), type(date2))
-    print("时间差/s :",(date2-date1).total_seconds())
-    return 0
+
 def sub_time(date1,date2):
     '''
     :param date1: str
@@ -77,8 +71,8 @@ def acrate(actimes,submittimes):
     else:
         return actimes/((int)(submittimes));
 
-date1 = "2022.05.11 13:30:00"
-date2 = "2022.05.10 12:00:00"
+# date1 = "2022.05.11 13:30:00"
+# date2 = "2022.05.10 12:00:00"
 # def longtail_modify(data):
 #     '''
 #        :param data: list
@@ -104,9 +98,7 @@ def longtail_modify_log(data):
     data = np.asarray(data )
     datanew=[]
     for datai in data:
-        if (float)(datai)+0.0001==0:
-            # print("log时，该长尾分布数据出现了",datai)
-            print("error !")
+
         if (float)(datai)==-1:
             datanew.append(math.log((float)(datai) + 10000000, 2))
         else:
@@ -114,9 +106,6 @@ def longtail_modify_log(data):
                 datanew.append(math.log((float)(datai)+0.0001,2))
             except (ValueError):
                 print("data i error:",datai)
-
-
-
     return np.asarray(datanew,'f').reshape(-1,1)
 
 def MinMaxScaler_use(column,number):
@@ -126,9 +115,11 @@ def MinMaxScaler_use(column,number):
 
 def longtail_log(column,number):
     data = [tmp[number] for tmp in column]
-    print(len(data))
+    if CONTROL.Global.LONGTAILLOGDETAIL:
+        print(len(data))
     timespass_std = longtail_modify_log(data)
-    print(len(column),len(timespass_std))
+    if CONTROL.Global.LONGTAILLOGDETAIL:
+        print(len(column),len(timespass_std))
     modifycol(column, timespass_std, number)
 
 def check_col(column):
@@ -137,15 +128,16 @@ def check_col(column):
             print("投入时间为0 ", i[0],"题目 ",i[1])
         if (i[6] == '0'):
             print("提交次数为0 ", i[0],"题目 ",i[1])
-        if (i[7] == '0'):
-            print("间隔为0 ", i[0],"题目 ",i[1])
+        if (i[7] == 0):
+            print(i[0],"间隔为0 ","题目 ",i[1])
         if (i[8] == 0):
-            print("通过次数为0 ", i[0],"题目 ",i[1],"提交次数为", i[6])
+            print(i[0],"通过次数为0 ","题目 ",i[1],"提交次数为", i[6])
         if( i[9]== 0):
-            print("通过率为0",i[0],"题目 ",i[1])
+            print(i[0],"通过率为0","题目 ",i[1])
 def merge(column):
     #xnum
-    print("begin merge")
+    if CONTROL.Global.PROCESSDETAIL:
+        print("学号+题目号码->学号 开始合并")
     adw=[3,4,5,6]
     anti_adw=[1,2]
 
@@ -169,14 +161,17 @@ def merge(column):
         numsofsubmit.put(i[0],times+1)
         # print("after ",re.get(i[0]))
     linked_list = numsofsubmit.headers
-    print(len(linked_list))
+
     for i in linked_list:
         for j in i.get_list():
-            if j.get_val()<10:
-                print(j.get_key(), j.get_val())
-                re.delete(j.get_key())
+            if j.get_val()<CONTROL.Global.LEASTSUBMIT:
+                if CONTROL.Global.LESSTHANLEASTSUBMITSHOW:
+                    print(j.get_key(), j.get_val())
+                if CONTROL.Global.DELETELESSSUBMIT:
+                    re.delete(j.get_key())
 
-    print("end merge")
+    if CONTROL.Global.PROCESSDETAIL:
+        print("学号+题目号码->学号 合并完成")
     return re
 def mergeadd_wei(re,one,xnum,times):
     #one 为全部的信息
@@ -196,3 +191,34 @@ def mergeadd(re,one,xnum,times):
     recordx=re.get(one[0])
     recordx[xnum] = (times) / (times + 1) * recordx[xnum] + \
                     one[colnum] / (times + 1)
+
+def map_zero_check(MAP):
+    linked_list = MAP.headers
+    for i in linked_list:
+        for j in i.get_list():
+            # print(j.get_key(),j.get_val())
+            for xi in j.get_val():
+                if xi == 0:
+                    print(j.get_key(), j.get_val())
+                    break
+
+def maptolist(MAP):
+    list=[]
+    linked_list = MAP.headers
+    for i in linked_list:
+        for j in i.get_list():
+            # print(j.get_key(),j.get_val())
+            list.append(j.get_val())
+    return list
+
+def cal_firstsubmit(column):
+    firstsubmit = HashMap()
+    for i in column:
+        if firstsubmit.get(i[1]) != None:
+            if sub_time(i[3], firstsubmit.get(i[1])) > 0:
+                if CONTROL.Global.FIRSTSUBMITDETAIL:
+                    print("fi_sub change at ", i[1], " from ", firstsubmit.get(i[1]), " to ", i[3])
+                firstsubmit.put(i[1], i[3])
+        else:
+            firstsubmit.put(i[1], i[3])
+    return firstsubmit
