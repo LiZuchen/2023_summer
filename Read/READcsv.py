@@ -10,8 +10,10 @@ from sklearn.cluster import KMeans
 from matplotlib import pyplot
 from sklearn.preprocessing import MinMaxScaler
 from sklearn_extra.cluster import KMedoids
+
+from dataprocess.hash import HashMap
 from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinMaxScaler_Single, modifycol, \
-    longtail_modify_log, longtail_modify
+    longtail_modify_log, longtail_log, MinMaxScaler_use, check_col, merge
 # filename="C:\\Users\\11858\\Desktop\\暑期\\data\\pure\\assigndata1518_2.csv"
 import os
 path = "C:\\Users\\11858\\Desktop\\暑期\\data\\pure"
@@ -29,18 +31,25 @@ for file in dirs:
         # column1=[row for row in reader if(row["题型"] == "编程题")]
         # print(len(column1))
         for col in reader:
-            if col["题型"] == "编程题" and col["提交次数"] != "-1" and col["提交次数"] != "0" :
+            if col["题型"] == "编程题" \
+                    and col["提交次数"] != "-1" \
+                    and col["提交次数"] != "0" \
+                    and col["难度"]!='0' \
+                    and (float)(col["首次AC时间"])>=0\
+                    and col["学号"]!="test1":
                 column.append(
-                [col["学号"],
-                col["题目ID"],
-                col["难度"],
-                col["首次提交时间"],
-                col["最后提交时间"],
-                sub_time(col["首次提交时间"],col["最后提交时间"]),  #提交时间差
-                col["提交次数"],  #提交次数
-                averagetime(sub_time(col["首次提交时间"], col["最后提交时间"]),col["提交次数"]),  #平均提交间隔
-                actimes(col["有效优化次数"], col["是否通过"]),  #通过次数
-                acrate(actimes(col["有效优化次数"], col["是否通过"]),submittimes=col["提交次数"])
+                [col["学号"],#0
+                col["题目ID"],#1
+                 (int)(col["难度"]),#2
+                col["首次提交时间"],#3
+                col["最后提交时间"],#4
+                sub_time(col["首次提交时间"],col["最后提交时间"]),  #提交时间差 5
+                (int)(col["提交次数"]),  #提交次数6
+                averagetime(sub_time(col["首次提交时间"], col["最后提交时间"]),col["提交次数"]),  #平均提交间隔7
+                actimes(col["有效优化次数"], col["是否通过"]),  #通过次数8
+                acrate(actimes(col["有效优化次数"], col["是否通过"]),submittimes=col["提交次数"]),#9
+                 (float)(col["首次AC时间"])#10
+                 #11首次提交与首次提交同学的时间差-->相对积极性
                 ]
                 )
     # column = [[col["学号"],
@@ -56,53 +65,73 @@ for file in dirs:
     #            ]for col in reader if((col["题型"]=="编程题")&(col["提交次数"]!="-1"))]  #  同列的数据
         print("读入"+file+"后，当前总共的编程题提交记录数: ",len(column))
 # print(column)
+
+
+check_col(column)
+
+firstsubmit=HashMap()
+for i in column:
+
+    if firstsubmit.get(i[1])!=None:
+        if sub_time(i[3],firstsubmit.get(i[1]))>0:
+            # print("fi_sub change at ", i[1], " from ",firstsubmit.get(i[1])," to ",i[3])
+            firstsubmit.put(i[1],i[3])
+    else:
+        firstsubmit.put(i[1], i[3])
+for i in column:
+    i.append(sub_time(firstsubmit.get(i[1]),i[3]))
+    #i[11]
+print(column[0])
+
 #引入sklkearn中的归一化模块
 #归一化
 #1）获取数据
-print("开始预处理：标准化投入时间")
-data=[tmp[5] for tmp in column]
-timespend_std=MinMaxScaler_Single(data)
-modifycol(column,timespend_std,5)
 
 print("开始预处理：长尾分布log:投入时间")
-data=[tmp[5] for tmp in column]
-timespend_std=longtail_modify_log(data)
-modifycol(column,timespend_std,5)
+longtail_log(column,5)
+print("开始预处理：标准化投入时间")
+MinMaxScaler_use(column,5)
 
-print("开始预处理：标准化提交次数")
-data=[tmp[6] for tmp in column]
-timessubmit_std=MinMaxScaler_Single(data)
-modifycol(column,timessubmit_std,6)
 
 print("开始预处理：长尾分布log：提交次数")
-data=[tmp[6] for tmp in column]
-timespass_std=longtail_modify_log(data)
-modifycol(column,timespass_std,6)
+longtail_log(column,6)
+print("开始预处理：标准化提交次数")
+MinMaxScaler_use(column,6)
 
 print("开始预处理：标准化平均间隔时间")
-data=[tmp[7] for tmp in column]
-timespend_std=MinMaxScaler_Single(data)
-modifycol(column,timespend_std,7)
+MinMaxScaler_use(column,7)
 
-print("开始预处理：标准化通过次数")
-data=[tmp[8] for tmp in column]
-timespass_std=MinMaxScaler_Single(data)
-modifycol(column,timespass_std,8)
-
-#调整分布：
 print("开始预处理：长尾分布log：通过次数")
-data=[tmp[8] for tmp in column]
-timespass_std=longtail_modify_log(data)
-modifycol(column,timespass_std,8)
+longtail_log(column,8)
+print("开始预处理：标准化通过次数")
+MinMaxScaler_use(column,8)
 
+print("开始预处理：标准化首次AC时间")
+longtail_log(column,10)
+MinMaxScaler_use(column,10)
+# print("开始预处理：长尾分布log：通过次数")
+# longtail_log(column,11)
+print("开始预处理：标准化首次提交与最早差")
+MinMaxScaler_use(column,11)
 
-X=np.asarray([tmp[5:] for tmp in column],'f')
+Xmap=merge(column)
+final=[]
 
+linked_list = Xmap.headers
+print(len(linked_list))
+for i in linked_list:
+    for j in i.get_list():
+        # print(j.get_key(),j.get_val())
+        final.append(j.get_val())
+        for xi in j.get_val():
+            if xi == 0:
+                print(j.get_key(),j.get_val())
+                break
+print("人数",len(final))
+# X=np.asarray([tmp[5:] for tmp in column],'f')
+X=np.asarray([tmp[:] for tmp in final],'f')
 i=0
-for x in X:
-    # print("通过rate: ",x[4])
-    if x[4]==0:
-        i+=1
+
 print("有题目存在最终通过率为0的人数",i)
 model = KMeans(n_clusters=5)
 # 模型拟合
