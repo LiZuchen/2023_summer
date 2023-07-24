@@ -37,8 +37,8 @@ for file in dirs:
                     and col["提交次数"] != "0" \
                     and col["难度"]!='0' \
                     and (float)(col["首次AC时间"])>=0\
-                    and col["学号"]!="test1" \
-                    and col["学号"] != "test6":
+                    and col["学号"][0]!="t" :\
+
 
                 column.append(
                 [col["学号"],#0
@@ -66,7 +66,7 @@ for file in dirs:
     #            actimes(col["有效优化次数"], col["是否通过"]),  #通过次数
     #            acrate(actimes(col["有效优化次数"], col["是否通过"]),submittimes=col["提交次数"])
     #            ]for col in reader if((col["题型"]=="编程题")&(col["提交次数"]!="-1"))]  #  同列的数据
-    if(CONTROL.Global.FILEREADLINES):
+    if(CONTROL.Global.FILEREAD_LINES):
         print("读入"+file+"后，当前总共的编程题提交记录数: ",len(column))
 for i in range(len(column[0])):
     if CONTROL.Global.COLTYPE:
@@ -85,39 +85,39 @@ for i in column:
 #引入sklkearn中的归一化模块
 #归一化
 #1）获取数据
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log:投入时间")
 longtail_log(column,5)
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化投入时间")
 MinMaxScaler_use(column,5)
 
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log：提交次数")
 longtail_log(column,6)
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化提交次数")
 MinMaxScaler_use(column,6)
 
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化平均间隔时间")
 MinMaxScaler_use(column,7)
 
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log：通过次数")
 longtail_log(column,8)
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化通过次数")
 MinMaxScaler_use(column,8)
 
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log：首次AC时间")
 longtail_log(column,10)
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化首次AC时间")
 MinMaxScaler_use(column,10)
 
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化首次提交与最早差")
 MinMaxScaler_use(column,11)
 
@@ -132,7 +132,7 @@ if CONTROL.Global.FINALNUMSOFSTD:
 X=np.asarray([tmp[:] for tmp in final],'f')
 
 #    kmeans
-if CONTROL.Global.PROCESSDETAIL:
+if CONTROL.Global.PROCESS_DETAIL:
     print("K-means begin")
 model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
 # 模型拟合

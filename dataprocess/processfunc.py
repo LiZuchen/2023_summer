@@ -100,10 +100,10 @@ def longtail_modify_log(data):
     for datai in data:
 
         if (float)(datai)==-1:
-            datanew.append(math.log((float)(datai) + 10000000, 2))
+            datanew.append(math.log((float)(datai) +CONTROL.Global.LONGTAIL_INF_ALT, 2))
         else:
             try:
-                datanew.append(math.log((float)(datai)+0.0001,2))
+                datanew.append(math.log((float)(datai)+CONTROL.Global.LONGTAIL_ZERO_ADD,2))
             except (ValueError):
                 print("data i error:",datai)
     return np.asarray(datanew,'f').reshape(-1,1)
@@ -136,7 +136,7 @@ def check_col(column):
             print(i[0],"通过率为0","题目 ",i[1])
 def merge(column):
     #xnum
-    if CONTROL.Global.PROCESSDETAIL:
+    if CONTROL.Global.PROCESS_DETAIL:
         print("学号+题目号码->学号 开始合并")
     adw=[3,4,5,6]
     anti_adw=[1,2]
@@ -170,7 +170,7 @@ def merge(column):
                 if CONTROL.Global.DELETELESSSUBMIT:
                     re.delete(j.get_key())
 
-    if CONTROL.Global.PROCESSDETAIL:
+    if CONTROL.Global.PROCESS_DETAIL:
         print("学号+题目号码->学号 合并完成")
     return re
 def mergeadd_wei(re,one,xnum,times):
@@ -216,7 +216,7 @@ def cal_firstsubmit(column):
     for i in column:
         if firstsubmit.get(i[1]) != None:
             if sub_time(i[3], firstsubmit.get(i[1])) > 0:
-                if CONTROL.Global.FIRSTSUBMITDETAIL:
+                if CONTROL.Global.FIRSTSUBMIT_DETAIL:
                     print("fi_sub change at ", i[1], " from ", firstsubmit.get(i[1]), " to ", i[3])
                 firstsubmit.put(i[1], i[3])
         else:
