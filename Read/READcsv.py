@@ -125,7 +125,7 @@ Xmap=merge(column)
 final=maptolist(Xmap)
 if CONTROL.Global.MAPZEROSHOW:
     map_zero_check(Xmap)
-if CONTROL.Global.FINALNUMSOFSTD:
+if CONTROL.Global.FINAL_NUMS_OF_STD:
     print("总计有效人数:",len(final))
 
 # X=np.asarray([tmp[5:] for tmp in column],'f')
@@ -144,17 +144,22 @@ if CONTROL.Global.SCOREON:
 # 检索唯一群集
 clusters = unique(yhat)
 # 为每个群集的样本创建散点图
+x_num=0
+y_num=4
 for cluster in clusters:
 # 获取此群集的示例的行索引
     row_ix = where(yhat == cluster)
 # 创建这些样本的散布
-    pyplot.scatter(X[row_ix, 1],X[row_ix, 4])
+    pyplot.scatter(X[row_ix, x_num],X[row_ix, y_num])
+
 # 绘制散点图
 pyplot.text(.99, .01, ('kmeans_score: %.2f' % metrics.calinski_harabasz_score(X, yhat)),
             transform=pyplot.gca().transAxes, size=10,
             horizontalalignment='right')
 
 
+pyplot.xlabel(CONTROL.Global.COLLIST[x_num+5],fontproperties="STSong",fontsize=16)
+pyplot.ylabel(CONTROL.Global.COLLIST[y_num+5],fontproperties="STSong",fontsize=16)
 # my_x_ticks=np.arange(-2, 1, 0.1)
 # my_y_ticks=(0, 1, 0.01)
 # pyplot.xticks(my_x_ticks)
