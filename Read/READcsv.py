@@ -17,6 +17,9 @@ from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinM
     longtail_modify_log, longtail_log, MinMaxScaler_use, check_col, merge, maptolist, map_zero_check, cal_firstsubmit
 # filename="C:\\Users\\11858\\Desktop\\暑期\\data\\pure\\assigndata1518_2.csv"
 import os
+
+from models.My_Kmeans import my_kmeans
+
 path = "C:\\Users\\11858\\Desktop\\暑期\\data\\pure"
 dirs = os.listdir(path)
 
@@ -87,39 +90,42 @@ for i in column:
 #1）获取数据
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log:投入时间")
-longtail_log(column,5)
+longtail_log(column,CONTROL.Global.COLLIST.index("投入时间"))
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化投入时间")
-MinMaxScaler_use(column,5)
+MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("投入时间"))
 
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log：提交次数")
-longtail_log(column,6)
+longtail_log(column,CONTROL.Global.COLLIST.index("提交次数"))
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化提交次数")
-MinMaxScaler_use(column,6)
+MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("提交次数"))
 
 if CONTROL.Global.PROCESS_DETAIL:
+    print("开始预处理：长尾分布log：平均间隔时间")
+longtail_log(column,CONTROL.Global.COLLIST.index("平均提交间隔"))
+if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化平均间隔时间")
-MinMaxScaler_use(column,7)
+MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("平均提交间隔"))
 
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log：通过次数")
-longtail_log(column,8)
+longtail_log(column,CONTROL.Global.COLLIST.index("通过次数"))
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化通过次数")
-MinMaxScaler_use(column,8)
+MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("通过次数"))
 
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：长尾分布log：首次AC时间")
-longtail_log(column,10)
+longtail_log(column,CONTROL.Global.COLLIST.index("首次AC时间"))
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化首次AC时间")
-MinMaxScaler_use(column,10)
+MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("首次AC时间"))
 
 if CONTROL.Global.PROCESS_DETAIL:
     print("开始预处理：标准化首次提交与最早差")
-MinMaxScaler_use(column,11)
+MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("首次提交时间和最早提交者的时间差"))
 
 Xmap=merge(column)
 final=maptolist(Xmap)
@@ -131,37 +137,6 @@ if CONTROL.Global.FINAL_NUMS_OF_STD:
 # X=np.asarray([tmp[5:] for tmp in column],'f')
 X=np.asarray([tmp[:] for tmp in final],'f')
 
-#    kmeans
-if CONTROL.Global.PROCESS_DETAIL:
-    print("K-means begin")
-model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
-# 模型拟合
-model.fit(X)
-# 为每个示例分配一个集群
-yhat = model.predict(X)
-if CONTROL.Global.SCOREON:
-    print(metrics.calinski_harabasz_score(X, yhat))
-# 检索唯一群集
-clusters = unique(yhat)
-# 为每个群集的样本创建散点图
-x_num=0
-y_num=4
-for cluster in clusters:
-# 获取此群集的示例的行索引
-    row_ix = where(yhat == cluster)
-# 创建这些样本的散布
-    pyplot.scatter(X[row_ix, x_num],X[row_ix, y_num])
-
-# 绘制散点图
-pyplot.text(.99, .01, ('kmeans_score: %.2f' % metrics.calinski_harabasz_score(X, yhat)),
-            transform=pyplot.gca().transAxes, size=10,
-            horizontalalignment='right')
-
-
-pyplot.xlabel(CONTROL.Global.COLLIST[x_num+5],fontproperties="STSong",fontsize=16)
-pyplot.ylabel(CONTROL.Global.COLLIST[y_num+5],fontproperties="STSong",fontsize=16)
-# my_x_ticks=np.arange(-2, 1, 0.1)
-# my_y_ticks=(0, 1, 0.01)
-# pyplot.xticks(my_x_ticks)
-# pyplot.yticks(my_y_ticks)
-pyplot.show()
+for i in range(7):
+    for j in range(i+1,7):
+        my_kmeans(X,i,j)

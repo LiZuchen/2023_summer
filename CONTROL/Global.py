@@ -31,3 +31,6 @@ COLLIST=[
 ]
 #PROCESS CONTROL
 DELETELESSSUBMIT=1
+
+#PATH CONTROL
+FIGSAVE_PATH="C:\\Users\\11858\\Desktop\\暑期\\data\\myfigs\\"

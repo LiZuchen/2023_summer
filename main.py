@@ -16,8 +16,8 @@ import matplotlib
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 from matplotlib import pyplot as plt
-import matplotlib
-a=sorted([f.name for f in matplotlib.font_manager.fontManager.ttflist])
-
-for i in a:
-    print(i)
+# import matplotlib
+# a=sorted([f.name for f in matplotlib.font_manager.fontManager.ttflist])
+#
+# for i in a:
+#     print(i)
