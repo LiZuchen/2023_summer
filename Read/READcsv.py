@@ -107,6 +107,4 @@ if CONTROL.Global.FINAL_NUMS_OF_STD:
 # X=np.asarray([tmp[5:] for tmp in column],'f')
 X=np.asarray([tmp[:7] for tmp in final],'f')
 
-for i in range(7):
-    for j in range(i+1,7):
-        my_kmeans(X,i,j)
+my_kmeans(X)
