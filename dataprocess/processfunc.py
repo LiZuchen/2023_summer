@@ -1,6 +1,8 @@
+import copy
 import math
 from datetime import datetime
 import numpy as np
+from matplotlib import pyplot
 from sklearn.preprocessing import MinMaxScaler
 
 import CONTROL.Global
@@ -100,6 +102,7 @@ def longtail_modify_log(data):
     for datai in data:
 
         if (float)(datai)==-1:
+            print("pass fail")
             datanew.append(math.log((float)(datai) +CONTROL.Global.LONGTAIL_INF_ALT, 2))
         else:
             try:
@@ -115,12 +118,56 @@ def MinMaxScaler_use(column,number):
 
 def longtail_log(column,number):
     data = [tmp[number] for tmp in column]
+    if CONTROL.Global.RAWFIGSHOW:
+        i=range(len(data))
+        pyplot.scatter(i,data)
+        pyplot.title(CONTROL.Global.XLIST[number],fontproperties="STSong")
+        pyplot.savefig(CONTROL.Global.RAW_FIGSAVE_PATH+CONTROL.Global.XLIST[number])
+        pyplot.show()
     if CONTROL.Global.LONGTAILLOGDETAIL:
         print(len(data))
     timespass_std = longtail_modify_log(data)
     if CONTROL.Global.LONGTAILLOGDETAIL:
         print(len(column),len(timespass_std))
     modifycol(column, timespass_std, number)
+
+def shorttail_modify_exp(data):
+    '''
+        :param data: list
+        :return: ndarray
+    '''
+    data = np.asarray(data)
+    datanew = []
+    for datai in data:
+
+        if (float)(datai) == -1:
+            datanew.append(math.exp((float)(datai) / 10000000))
+        else:
+            try:
+                datanew.append(math.exp((float)(datai)/10000000))
+            except OverflowError:
+                print("data i/10000000 error:", datai/10000000)
+
+            # try:
+            #     datanew.append(math.exp((float)(datai)))
+            # except (ValueError):
+            #     print("data i error:", datai)
+    return np.asarray(datanew, 'f').reshape(-1, 1)
+def shorttail_exp(column,number):
+    data = [tmp[number] for tmp in column]
+    if CONTROL.Global.RAWFIGSHOW:
+        i=range(len(data))
+        pyplot.scatter(i,data)
+        pyplot.title(CONTROL.Global.XLIST[number],fontproperties="STSong")
+        pyplot.savefig(CONTROL.Global.RAW_FIGSAVE_PATH+CONTROL.Global.XLIST[number])
+        pyplot.show()
+    if CONTROL.Global.LONGTAILLOGDETAIL:
+        print(len(data))
+    timespass_std = shorttail_modify_exp(data)
+    if CONTROL.Global.SHORTTAILEXPDETAIL:
+        print(len(column),len(timespass_std))
+    modifycol(column, timespass_std, number)
+
 
 def check_col(column):
     for i in column:
@@ -134,12 +181,19 @@ def check_col(column):
             print(i[0],"通过次数为0 ","题目 ",i[1],"提交次数为", i[6])
         if( i[9]== 0):
             print(i[0],"通过率为0","题目 ",i[1])
+# def  col_FACtime(column):
+#     for i in column:
+#         if i[CONTROL.Global.COLLIST.index("首次AC时间")]<0:
+#             i[CONTROL.Global.COLLIST.index("首次AC时间")]=CONTROL.Global.LONGTAIL_INF_ALT
+#             print(i)
+#     return column
 def merge(column):
     #xnum
     if CONTROL.Global.PROCESS_DETAIL:
         print("学号+题目号码->学号 开始合并")
     adw=[3,4,5,6]
     anti_adw=[1,2]
+    # column=col_FACtime(column)
 
     re=HashMap()
     #key:stdid;value:X
@@ -202,12 +256,23 @@ def map_zero_check(MAP):
                     print(j.get_key(), j.get_val())
                     break
 
+def maptolist2(MAP):
+    list=[]
+    linked_list = MAP.headers
+    for i in linked_list:
+        for j in i.get_list():
+            # print(type(j.get_key()),type(j.get_val()))
+            std_std=copy.deepcopy(j.get_val())
+            std_std.append(j.get_key())
+            list.append(std_std)
+    return list
+
 def maptolist(MAP):
     list=[]
     linked_list = MAP.headers
     for i in linked_list:
         for j in i.get_list():
-            # print(j.get_key(),j.get_val())
+            # print(type(j.get_key()),type(j.get_val()))
             list.append(j.get_val())
     return list
 
@@ -222,3 +287,61 @@ def cal_firstsubmit(column):
         else:
             firstsubmit.put(i[1], i[3])
     return firstsubmit
+
+def process(column):
+    # LIST=CONTROL.Global.COLLIST
+    LIST=CONTROL.Global.XLIST
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashlog.get("投入时间") == 1:
+        print("开始预处理：长尾分布log:投入时间")
+        longtail_log(column, LIST.index("投入时间"))
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化投入时间")
+    MinMaxScaler_use(column, LIST.index("投入时间"))
+
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashlog.get("提交次数") == 1:
+        print("开始预处理：长尾分布log：提交次数")
+        longtail_log(column,LIST.index("提交次数"))
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化提交次数")
+    MinMaxScaler_use(column, LIST.index("提交次数"))
+
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashlog.get("平均提交间隔") == 1:
+        print("开始预处理：长尾分布log：平均提交间隔")
+        longtail_log(column,LIST.index("平均提交间隔"))
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化平均提交间隔")
+    MinMaxScaler_use(column,LIST.index("平均提交间隔"))
+
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashlog.get("通过次数") == 1:
+        print("开始预处理：长尾分布log：通过次数")
+        longtail_log(column,LIST.index("通过次数"))
+
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化通过次数")
+    MinMaxScaler_use(column,LIST.index("通过次数"))
+
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化通过率")
+    MinMaxScaler_use(column,LIST.index("通过率"))
+
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashlog.get("首次AC时间") == 1:
+        print("开始预处理：长尾分布log：首次AC时间")
+        longtail_log(column,LIST.index("首次AC时间"))
+
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化首次AC时间")
+    MinMaxScaler_use(column,LIST.index("首次AC时间"))
+
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashlog.get("首次提交时间和最早提交者的时间差") == 1:
+        print("开始预处理：长尾分布log：首次提交时间和最早提交者的时间差")
+        longtail_log(column, LIST.index("首次提交时间和最早提交者的时间差"))
+
+    if CONTROL.Global.PROCESS_DETAIL and CONTROL.Global.hashexp.get("首次提交时间和最早提交者的时间差") == 1:
+        print("开始预处理：厚尾分布exp：首次提交时间和最早提交者的时间差")
+        shorttail_exp(column, LIST.index("首次提交时间和最早提交者的时间差"))
+
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化首次提交时间和最早提交者的时间差")
+    MinMaxScaler_use(column,LIST.index("首次提交时间和最早提交者的时间差"))
+
+    return column

@@ -12,9 +12,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn_extra.cluster import KMedoids
 
 import CONTROL.Global
+from dataprocess import processfunc
 from dataprocess.hash import HashMap
 from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinMaxScaler_Single, modifycol, \
-    longtail_modify_log, longtail_log, MinMaxScaler_use, check_col, merge, maptolist, map_zero_check, cal_firstsubmit
+    longtail_modify_log, longtail_log, MinMaxScaler_use, check_col, merge, maptolist, map_zero_check, cal_firstsubmit, \
+    maptolist2
 # filename="C:\\Users\\11858\\Desktop\\暑期\\data\\pure\\assigndata1518_2.csv"
 import os
 
@@ -88,54 +90,22 @@ for i in column:
 #引入sklkearn中的归一化模块
 #归一化
 #1）获取数据
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：长尾分布log:投入时间")
-longtail_log(column,CONTROL.Global.COLLIST.index("投入时间"))
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：标准化投入时间")
-MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("投入时间"))
-
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：长尾分布log：提交次数")
-longtail_log(column,CONTROL.Global.COLLIST.index("提交次数"))
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：标准化提交次数")
-MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("提交次数"))
-
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：长尾分布log：平均间隔时间")
-longtail_log(column,CONTROL.Global.COLLIST.index("平均提交间隔"))
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：标准化平均间隔时间")
-MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("平均提交间隔"))
-
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：长尾分布log：通过次数")
-longtail_log(column,CONTROL.Global.COLLIST.index("通过次数"))
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：标准化通过次数")
-MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("通过次数"))
-
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：长尾分布log：首次AC时间")
-longtail_log(column,CONTROL.Global.COLLIST.index("首次AC时间"))
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：标准化首次AC时间")
-MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("首次AC时间"))
-
-if CONTROL.Global.PROCESS_DETAIL:
-    print("开始预处理：标准化首次提交与最早差")
-MinMaxScaler_use(column,CONTROL.Global.COLLIST.index("首次提交时间和最早提交者的时间差"))
-
 Xmap=merge(column)
-final=maptolist(Xmap)
+col=maptolist2(Xmap)
+
+col=processfunc.process(col)
+
+# column=processfunc.process(column)
+#
+# Xmap=merge(column)
+final=col
 if CONTROL.Global.MAPZEROSHOW:
     map_zero_check(Xmap)
 if CONTROL.Global.FINAL_NUMS_OF_STD:
     print("总计有效人数:",len(final))
 
 # X=np.asarray([tmp[5:] for tmp in column],'f')
-X=np.asarray([tmp[:] for tmp in final],'f')
+X=np.asarray([tmp[:7] for tmp in final],'f')
 
 for i in range(7):
     for j in range(i+1,7):
