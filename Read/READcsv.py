@@ -1,20 +1,7 @@
-import math
-import string
-from datetime import datetime
 import numpy as np
 import csv
-from numpy import unique
-from numpy import where
-from sklearn import metrics
-from sklearn.datasets import make_classification
-from sklearn.cluster import KMeans
-from matplotlib import pyplot
-from sklearn.preprocessing import MinMaxScaler
-from sklearn_extra.cluster import KMedoids
-
 import CONTROL.Global
 from dataprocess import processfunc
-from dataprocess.hash import HashMap
 from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinMaxScaler_Single, modifycol, \
     longtail_modify_log, longtail_log, MinMaxScaler_use, check_col, merge, maptolist, map_zero_check, cal_firstsubmit, \
     maptolist2

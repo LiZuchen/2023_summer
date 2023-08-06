@@ -1,3 +1,5 @@
+import warnings
+
 from matplotlib import pyplot
 from numpy import unique, where
 from sklearn import metrics
@@ -43,11 +45,14 @@ def my_kmeans(X=None):
     if CONTROL.Global.PROCESS_DETAIL:
         print("K-means begin")
 
-    model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
-    # 模型拟合
-    m=X[:,:7]
 
-    model.fit(X[:,:7])
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore",category=FutureWarning,module="sklearn",lineno=1412)
+        model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
+        model.fit(X[:, :7])
+    # 模型拟合
+
     # 为每个示例分配一个集群
     yhat = model.predict(X[:,:7])
     if CONTROL.Global.SCOREON:
@@ -76,7 +81,6 @@ def my_kmeans(X=None):
 def resultshow(stdlist):
         stdnum=0
         k=0
-
         for i in stdlist:
             if CONTROL.Global.STDID_SHOW:
                 print("颜色为: ",CONTROL.Global.COLORLIST_NAME[k]," 如下：")
