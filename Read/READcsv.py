@@ -1,4 +1,5 @@
 import math
+import string
 from datetime import datetime
 import numpy as np
 import csv
@@ -42,8 +43,9 @@ for file in dirs:
                     and col["提交次数"] != "0" \
                     and col["难度"]!='0' \
                     and (float)(col["首次AC时间"])>=0\
-                    and col["学号"][0]!="t" :\
-
+                    and col["学号"][0]!="t" \
+                    and col["学号"][0]!="y" \
+                    and col["学号"][0]!= "s":\
 
                 column.append(
                 [col["学号"],#0
@@ -105,6 +107,12 @@ if CONTROL.Global.FINAL_NUMS_OF_STD:
     print("总计有效人数:",len(final))
 
 # X=np.asarray([tmp[5:] for tmp in column],'f')
-X=np.asarray([tmp[:7] for tmp in final],'f')
+#tmp[7]:std id
+for i in final:
+    try:
+        i[7]=int(i[7])
+    except ValueError:
+        print(i[7])
+X=np.asarray([tmp for tmp in final],'f')
 
 my_kmeans(X)

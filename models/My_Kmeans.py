@@ -6,16 +6,19 @@ from sklearn.cluster import KMeans
 import CONTROL
 def draw(X,yhat,clusters, x_num, y_num):
     # 为每个群集的样本创建散点图
+
+    rgb=CONTROL.Global.COLORLIST_RGB
+    k=0
     for cluster in clusters:
         # 获取此群集的示例的行索引
-
         row_ix = where(yhat == cluster)
         # 创建这些样本的散布
+        pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num],c=rgb[k])
+        k += 1
 
-        pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num])
 
     # 绘制散点图
-    pyplot.text(.99, .01, ('kmeans_score: %.2f' % metrics.calinski_harabasz_score(X, yhat)),
+    pyplot.text(.99, .01, ('kmeans_score: %.2f' % metrics.calinski_harabasz_score(X[:,:7], yhat)),
                 transform=pyplot.gca().transAxes, size=10,
                 horizontalalignment='right')
     name = "N= " + (str)(CONTROL.Global.KMEANSCLUSTER) + " " + CONTROL.Global.COLLIST[y_num + 5] + "-" + \
@@ -33,6 +36,7 @@ def draw(X,yhat,clusters, x_num, y_num):
     print(CONTROL.Global.FIGSAVE_PATH + yname + "-" + xname + ".png")
     pyplot.savefig(CONTROL.Global.FIGSAVE_PATH + yname + "-" + xname + ".png")
     pyplot.show()
+
 def my_kmeans(X=None):
     ways = "K-means"
     #    kmeans
@@ -41,14 +45,47 @@ def my_kmeans(X=None):
 
     model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
     # 模型拟合
-    model.fit(X)
-    # 为每个示例分配一个集群
-    yhat = model.predict(X)
-    if CONTROL.Global.SCOREON:
+    m=X[:,:7]
 
-        print(ways,metrics.calinski_harabasz_score(X, yhat))
+    model.fit(X[:,:7])
+    # 为每个示例分配一个集群
+    yhat = model.predict(X[:,:7])
+    if CONTROL.Global.SCOREON:
+        print(ways,metrics.calinski_harabasz_score(X[:,:7], yhat))
     # 检索唯一群集
     clusters=unique(yhat)
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("K-means end,draw begin")
+
+    #calulate
+    stdlist = []
+    k = 0
+    for cluster in clusters:
+        # 获取此群集的示例的行索引
+        row_ix = where(yhat == cluster)
+        # 创建这些样本的散布
+        stdlist.append(X[row_ix, 7])
+        k += 1
+    resultshow(stdlist)
+
+    #draw
     for i in range(7):
         for j in range(i + 1, 7):
             draw(X,yhat,clusters,i,j)
+
+def resultshow(stdlist):
+        stdnum=0
+        k=0
+
+        for i in stdlist:
+            if CONTROL.Global.STDID_SHOW:
+                print("颜色为: ",CONTROL.Global.COLORLIST_NAME[k]," 如下：")
+                for j in i:
+                    print(j)
+
+            if CONTROL.Global.STDNUM_SHOW:
+                print("颜色为: ", CONTROL.Global.COLORLIST_NAME[k]," ",i.size,"人")
+                stdnum+=i.size
+            k += 1
+        if CONTROL.Global.STDNUM_SHOW:
+            print("总计 ",stdnum," 人")

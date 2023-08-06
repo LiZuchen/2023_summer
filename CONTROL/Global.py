@@ -70,3 +70,11 @@ hashexp.put("通过次数",0)#8
 hashexp.put("通过率",0)#9
 hashexp.put("首次AC时间",0)#10
 hashexp.put("首次提交时间和最早提交者的时间差",1)#11
+
+#DRAWCONTROL
+COLORLIST_NAME=['red','orange','green','blue']
+COLORLIST_RGB=["#D62728","#FF7F0E","#2CA02C","#1F77B4"]
+
+#RESULTCONTROL
+STDID_SHOW=0
+STDNUM_SHOW=1
