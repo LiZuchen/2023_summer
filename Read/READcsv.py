@@ -62,9 +62,7 @@ for file in dirs:
     #            ]for col in reader if((col["题型"]=="编程题")&(col["提交次数"]!="-1"))]  #  同列的数据
     if(CONTROL.Global.FILEREAD_LINES):
         print("读入"+file+"后，当前总共的编程题提交记录数: ",len(column))
-for i in range(len(column[0])):
-    if CONTROL.Global.COLTYPE:
-        print(i,CONTROL.Global.COLLIST[i],(type)(column[0][i]))
+
 
 if CONTROL.Global.CHECKFORCOL:
     check_col(column)
@@ -75,7 +73,12 @@ for i in column:
     i.append(sub_time(firstsubmit.get(i[1]),i[3]))
     #i[11]
 
-
+if CONTROL.Global.PROCESS_DETAIL:
+    print("cs数据读取完成，特征项构造完成")
+    if CONTROL.Global.COLTYPE:
+        for i in range(len(column[0])):
+            print(i, CONTROL.Global.COLLIST[i], (type)(column[0][i]))
+    print()
 #引入sklkearn中的归一化模块
 #归一化
 #1）获取数据
