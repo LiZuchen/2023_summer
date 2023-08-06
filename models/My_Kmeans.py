@@ -6,16 +6,19 @@ from sklearn import metrics
 from sklearn.cluster import KMeans
 
 import CONTROL
-def draw(X,yhat,clusters, x_num, y_num):
-    # 为每个群集的样本创建散点图
 
+
+
+def draw(X,yhat,clusters, x_num, y_num,listnum):
+    # 为每个群集的样本创建散点图
     rgb=CONTROL.Global.COLORLIST_RGB
     k=0
     for cluster in clusters:
         # 获取此群集的示例的行索引
         row_ix = where(yhat == cluster)
         # 创建这些样本的散布
-        pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num],c=rgb[k])
+        pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num],c=rgb[listnum.index(row_ix[0].size)])
+
         k += 1
 
 
@@ -64,6 +67,12 @@ def my_kmeans(X=None):
 
     #calulate
     stdlist = []
+    listnum=[]
+    for cluster in clusters:
+        # 获取此群集的示例的行索引
+        row_ix = where(yhat == cluster)
+        listnum.append(row_ix[0].size)
+    listnum.sort()
     k = 0
     for cluster in clusters:
         # 获取此群集的示例的行索引
@@ -71,24 +80,24 @@ def my_kmeans(X=None):
         # 创建这些样本的散布
         stdlist.append(X[row_ix, 7])
         k += 1
-    resultshow(stdlist)
+    resultshow(stdlist,listnum)
 
     #draw
     for i in range(7):
         for j in range(i + 1, 7):
-            draw(X,yhat,clusters,i,j)
+            draw(X,yhat,clusters,i,j,listnum)
 
-def resultshow(stdlist):
+def resultshow(stdlist,listnum):
         stdnum=0
         k=0
         for i in stdlist:
             if CONTROL.Global.STDID_SHOW:
-                print("颜色为: ",CONTROL.Global.COLORLIST_NAME[k]," 如下：")
+                print("颜色为: ",CONTROL.Global.COLORLIST_NAME[listnum.index(i.size)]," 如下：")
                 for j in i:
                     print(j)
 
             if CONTROL.Global.STDNUM_SHOW:
-                print("颜色为: ", CONTROL.Global.COLORLIST_NAME[k]," ",i.size,"人")
+                print("颜色为: ", CONTROL.Global.COLORLIST_NAME[listnum.index(i.size)]," ",i.size,"人")
                 stdnum+=i.size
             k += 1
         if CONTROL.Global.STDNUM_SHOW:

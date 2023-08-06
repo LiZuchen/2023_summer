@@ -72,9 +72,13 @@ hashexp.put("首次AC时间",0)#10
 hashexp.put("首次提交时间和最早提交者的时间差",1)#11
 
 #DRAWCONTROL
-COLORLIST_NAME=['red','orange','green','blue']
-COLORLIST_RGB=["#D62728","#FF7F0E","#2CA02C","#1F77B4"]
-
+COLORLIST_NAME=['blue','orange','green','red']
+COLORLIST_RGB=["#1F77B4","#D62728","#FF7F0E","#2CA02C"]
+# hashcolor=HashMap()
+# hashcolor.put(662,0)
+# hashcolor.put(261,1)
+# hashcolor.put(384,2)
+# hashcolor.put(119,3)
 #RESULTCONTROL
 STDID_SHOW=0
 STDNUM_SHOW=1
