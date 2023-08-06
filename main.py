@@ -11,6 +11,8 @@ import os
 # if __name__ == '__main__':
 #     print_hi('PyCharm')
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
-
+'''
+   version 1.0.0 by 20231086 LiZuchen 
+'''
 if __name__ == '__main__':
    os.system('python .//Read//READcsv.py')
