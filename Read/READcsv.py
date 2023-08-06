@@ -114,6 +114,7 @@ for i in final:
         print(i[7])
 # list1=[]
 # for tmp in final
+#！！！！！
 X = np.asarray([tmp for tmp in final])
 
 my_kmeans(X)
