@@ -14,7 +14,7 @@ SHORTTAILEXPDETAIL=0
 CHECKFORCOL=0
 LESSTHANLEASTSUBMITSHOW=1
 MAPZEROSHOW=0
-
+FIGTITLESHOW=0
 RAWFIGSHOW=0
 #para control
 LEASTSUBMIT=8
@@ -43,7 +43,8 @@ XLIST=[
  "通过率",#4
  "首次AC时间",#5
  "首次提交时间和最早提交者的时间差",#6
- "学号"#7
+ "copy",#7
+ "学号"#8
 ]
 
 #PROCESS CONTROL
@@ -73,8 +74,8 @@ hashexp.put("首次AC时间",0)#10
 hashexp.put("首次提交时间和最早提交者的时间差",1)#11
 
 #DRAWCONTROL
-COLORLIST_NAME=['blue','red','orange','green']
-COLORLIST_RGB=["#1F77B4","#D62728","#FF7F0E","#2CA02C"]
+COLORLIST_NAME=['blue','red','orange','green','yellow']
+COLORLIST_RGB=["#1F77B4","#D62728","#FF7F0E","#2CA02C","#fff400"]
 # hashcolor=HashMap()
 # hashcolor.put(662,0)
 # hashcolor.put(261,1)

@@ -267,6 +267,8 @@ def maptolist2(MAP):
         for j in i.get_list():
             # print(type(j.get_key()),type(j.get_val()))
             std_std=copy.deepcopy(j.get_val())
+            std_std.append(0)
+            #copy
             std_std.append(j.get_key())
             list.append(std_std)
 
@@ -348,5 +350,9 @@ def process(column):
     if CONTROL.Global.PROCESS_DETAIL:
         print("开始预处理：标准化首次提交时间和最早提交者的时间差")
     MinMaxScaler_use(column,LIST.index("首次提交时间和最早提交者的时间差"))
+
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：标准化copytimes")
+    MinMaxScaler_use(column, LIST.index("copy"))
 
     return column

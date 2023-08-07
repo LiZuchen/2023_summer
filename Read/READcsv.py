@@ -1,6 +1,7 @@
 import numpy as np
 import csv
 import CONTROL.Global
+from Read.READcopy import readcopy
 from dataprocess import processfunc
 from dataprocess.hash import HashMap
 from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinMaxScaler_Single, modifycol, \
@@ -68,9 +69,11 @@ if CONTROL.Global.CHECKFORCOL:
 
 firstsubmit = cal_firstsubmit(column)
 # 加入#11列
+copy=readcopy()
 for i in column:
     i.append(sub_time(firstsubmit.get(i[1]), i[3]))
     # i[11]
+
 
 if CONTROL.Global.PROCESS_DETAIL:
     print("csv数据读取完成，特征项构造完成")
@@ -82,8 +85,13 @@ if CONTROL.Global.PROCESS_DETAIL:
 # 归一化
 # 1）获取数据
 Xmap = merge(column)
-col = maptolist2(Xmap)
 
+col = maptolist2(Xmap)
+for i in col:
+    if copy.get(i[8]) == None:
+        i[7]=0
+    else:
+        i[7]=copy.get(i[8])
 col = processfunc.process(col)
 
 # check = HashMap()
@@ -96,9 +104,9 @@ col = processfunc.process(col)
 #
 # Xmap=merge(column)
 final = col
-for x in final:
-    if x[7] == '20231005':
-        print(x)
+# for x in final:
+#     if x[7] == '20231005':
+#         print(x)
 if CONTROL.Global.MAPZEROSHOW:
     map_zero_check(Xmap)
 if CONTROL.Global.FINAL_NUMS_OF_STD:
@@ -108,10 +116,10 @@ if CONTROL.Global.FINAL_NUMS_OF_STD:
 # tmp[7]:std id
 for i in final:
     try:
-        i[7] = int(i[7])
+        i[8] = int(i[8])
 
     except ValueError:
-        print(i[7])
+        print(i[8])
 # list1=[]
 # for tmp in final
 #！！！！！
