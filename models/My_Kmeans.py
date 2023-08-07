@@ -1,5 +1,6 @@
 import warnings
 
+import numpy as np
 from matplotlib import pyplot
 from numpy import unique, where
 from sklearn import metrics
@@ -13,6 +14,7 @@ from dataprocess.hash import HashMap
 def draw(X, yhat, clusters, x_num, y_num, listnum):
     # 为每个群集的样本创建散点图
     rgb = CONTROL.Global.COLORLIST_RGB
+    #rgb 为 蓝 红 橙 绿
     k = 0
     for cluster in clusters:
         # 获取此群集的示例的行索引
@@ -73,6 +75,9 @@ def my_kmeans(X=None):
         row_ix = where(yhat == cluster)
         listnum.append(row_ix[0].size)
     listnum.sort()
+    print("首次排序后的大小",listnum)
+    #颜色应为 蓝 红 橙 绿
+    print("颜色应为   蓝 红 橙 绿")
     k = 0
 
     for cluster in clusters:
@@ -83,7 +88,6 @@ def my_kmeans(X=None):
 
         for j in row_ix[0]:
             if hashcolors.get(X[j, 7])!=None:
-
                 print("重复在",j,X[j, 7],"之前在",hashcolors.get(X[j, 7]))
             else:
                 hashcolors.put(X[j, 7],j)
@@ -93,9 +97,11 @@ def my_kmeans(X=None):
 
         stdlist.append(ele)
         k += 1
+    #stdlist按乱序装入各个学生
+    #listnum 指定各人数对应的颜色
     resultshow(stdlist, listnum)
 
-    draw
+    #draw
     for i in range(7):
         for j in range(i + 1, 7):
             draw(X, yhat, clusters, i, j, listnum)
@@ -112,7 +118,7 @@ def resultshow(stdlist, listnum):
     t = 0
     for i in stdlist:
         if CONTROL.Global.STDID_SHOW:
-            print("颜色为: ", CONTROL.Global.COLORLIST_NAME[listnum.index(i.size)], " 如下：")
+            print("颜色为: ", CONTROL.Global.COLORLIST_NAME[listnum.index(len(i))], " 如下：")
         for j in i:
             # (hashcolor.get(CONTROL.Global.COLORLIST_NAME[listnum.index(i.size)])).append(j)
 
@@ -136,8 +142,84 @@ def resultshow(stdlist, listnum):
         c = 0
         test = readtest()
         for i in test:
-            i.append(hashcolor.get(i[0]))
             if hashcolor.get(i[0]) == None:
-                c += 1
+                c+=1
                 print(i)
+                i.append(None)
+            else:
+                i.append(hashcolor.get(i[0]))
         print("未找到人数",c)
+
+
+    if 1:
+        for tmp in test:
+            if tmp[4]!=None:
+                tmp[4]=CONTROL.Global.COLORLIST_NAME.index(tmp[4])
+            else:
+                tmp[4]=-1
+            if((int)(tmp[0])>70000000):
+                tmp[0]=(int)(tmp[0])-50000000
+        nptest=np.asarray([[(int)(tmp[0]),tmp[2],tmp[4]]for tmp in test])
+
+        row_ixs=[]
+        for i in range(4):
+            row_ix=where(nptest[:,2]==i)
+            row_ixs.append(row_ix[0].size)
+            pyplot.scatter(nptest[row_ix,1],nptest[row_ix,0],c=CONTROL.Global.COLORLIST_RGB[i])
+        pyplot.show()
+        ri=[]
+        rinum=[0,0,0,0,0]
+        for i in nptest[:,1]:
+            ri.append(int(i//10))
+            rinum[int(i//10)]=rinum[int(i//10)]+1
+        # pyplot.bar(ri,nptest[:,1], alpha=1, width=1, color='r', edgecolor='r')
+        pyplot.bar(range(0,5), rinum, alpha=1, width=1, color='r')
+        pyplot.show()
+
+        qj=5
+        #blue
+        first = [0,0,0,0]
+        #red
+        second = [0,0,0,0]
+        #orange
+        third = [0,0,0,0]
+        #green
+        fourth =[0,0,0,0]
+        all=[first ,second ,third ,fourth]
+        labels = {0, 1, 2, 3}
+
+        for i in range(4):
+            row_ix=where(nptest[:,2]==i)
+            for j in nptest[row_ix, 1][0]:
+                try:
+                    all[listnum.index(len(row_ix[0]))][(int(j // 10))]+=1
+                except IndexError:
+                    print(i)
+                    print(j)
+        rgb=CONTROL.Global.COLORLIST_RGB
+
+        #first 为蓝色各分段人数
+        first_num=row_ixs[0]
+        second_num=row_ixs[1]
+        third_num=row_ixs[2]
+        fourth_num=row_ixs[3]
+        labels={0,1,2,3}
+
+        x = np.arange(len(labels))  # x轴刻度标签位置
+        width = 0.2  # 柱子的宽度
+        # 计算每个柱子在x轴上的位置，保证x轴刻度标签居中
+        pyplot.bar(x - 1.5 * width, first , width, label='1',color=rgb[0])
+        pyplot.bar(x - 0.5 * width, second, width, label='2',color=rgb[1])
+        pyplot.bar(x + 0.5 * width, third, width, label='3',color=rgb[2])
+        pyplot.bar(x + 1.5 * width, fourth, width, label='4',color=rgb[3])
+        pyplot.ylabel('人数',fontproperties="STSong", fontsize=16)
+        pyplot.title('人数-成绩表',fontproperties="STSong", fontsize=16)
+        pyplot.xticks(x, labels=labels)
+        pyplot.legend()
+
+        pyplot.show()
+        print(first_num)
+        print(second_num)
+        print(third_num)
+        print(fourth_num)
+

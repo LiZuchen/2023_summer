@@ -216,13 +216,17 @@ def merge(column):
         # print("after ",re.get(i[0]))
     linked_list = numsofsubmit.headers
 
+    delnum=0
     for i in linked_list:
         for j in i.get_list():
             if j.get_val()<CONTROL.Global.LEASTSUBMIT:
                 if CONTROL.Global.LESSTHANLEASTSUBMITSHOW:
                     print(j.get_key(), j.get_val())
                 if CONTROL.Global.DELETELESSSUBMIT:
+                    print("delete ",j.get_key(),j.get_val())
                     re.delete(j.get_key())
+                    delnum+=1
+    print("共删除：",delnum)
 
     if CONTROL.Global.PROCESS_DETAIL:
         print("学号+题目号码->学号 合并完成")
