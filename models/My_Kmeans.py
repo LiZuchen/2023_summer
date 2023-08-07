@@ -57,13 +57,13 @@ def my_kmeans(X=None):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=FutureWarning, module="sklearn", lineno=1412)
         model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
-        model.fit(X[:, :8 ])
+        model.fit(X[:, :8])
     # 模型拟合
 
     # 为每个示例分配一个集群
     yhat = model.predict(X[:, :8])
     if CONTROL.Global.SCOREON:
-        print(ways, metrics.calinski_harabasz_score(X[:, :7], yhat))
+        print(ways, metrics.calinski_harabasz_score(X[:, :8], yhat))
     # 检索唯一群集
     clusters = unique(yhat)
     if CONTROL.Global.PROCESS_DETAIL:
@@ -89,13 +89,13 @@ def my_kmeans(X=None):
 
 
         for j in row_ix[0]:
-            if hashcolors.get(X[j, 7])!=None:
-                print("重复在",j,X[j, 7],"之前在",hashcolors.get(X[j, 7]))
+            if hashcolors.get(X[j, 8])!=None:
+                print("重复在",j,X[j, 8],"之前在",hashcolors.get(X[j, 8]))
             else:
-                hashcolors.put(X[j, 7],j)
+                hashcolors.put(X[j, 8],j)
                 # print("放入",j,X[j, 7])
 
-        ele = X[row_ix, 7].tolist()[0]
+        ele = X[row_ix, 8].tolist()[0]
 
         stdlist.append(ele)
         k += 1
@@ -104,8 +104,8 @@ def my_kmeans(X=None):
     resultshow(stdlist, listnum)
 
     #draw
-    for i in range(7):
-        for j in range(i + 1, 7):
+    for i in range(8):
+        for j in range(i + 1, 8):
             draw(X, yhat, clusters, i, j, listnum)
 
 

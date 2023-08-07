@@ -88,10 +88,11 @@ Xmap = merge(column)
 
 col = maptolist2(Xmap)
 for i in col:
-    if copy.get(i[8]) == None:
+    if copy.get(int(i[8])) == None:
         i[7]=0
     else:
-        i[7]=copy.get(i[8])
+        i[7]=copy.get(int(i[8]))
+        print(i[8],i[7])
 col = processfunc.process(col)
 
 # check = HashMap()
