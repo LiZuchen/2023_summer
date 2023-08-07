@@ -126,4 +126,4 @@ for i in final:
 #！！！！！
 X = np.asarray([tmp for tmp in final])
 
-my_kmeans(X)
+my_kmeans(X,copy)

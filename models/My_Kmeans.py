@@ -47,7 +47,7 @@ def draw(X, yhat, clusters, x_num, y_num, listnum):
     pyplot.show()
 
 
-def my_kmeans(X=None):
+def my_kmeans(X=None,copy=None):
     ways = "K-means"
     hashcolors = HashMap()
     #    kmeans
@@ -101,7 +101,7 @@ def my_kmeans(X=None):
         k += 1
     #stdlist按乱序装入各个学生
     #listnum 指定各人数对应的颜色
-    resultshow(stdlist, listnum)
+    resultshow(stdlist, listnum,copy)
 
     #draw
     for i in range(8):
@@ -109,7 +109,7 @@ def my_kmeans(X=None):
             draw(X, yhat, clusters, i, j, listnum)
 
 
-def resultshow(stdlist, listnum):
+def resultshow(stdlist, listnum,copy):
     stdnum = 0
     k = 0
     hashcolor = HashMap()
@@ -133,6 +133,8 @@ def resultshow(stdlist, listnum):
             if CONTROL.Global.STDID_SHOW:
                 print(k)
 
+
+
         if CONTROL.Global.STDNUM_SHOW:
             print("颜色为: ", CONTROL.Global.COLORLIST_NAME[listnum.index(len(i))], " ", len(i), "人")
             stdnum += len(i)
@@ -146,10 +148,15 @@ def resultshow(stdlist, listnum):
         for i in test:
             if hashcolor.get(i[0]) == None:
                 c+=1
-                print(i)
+                # print(i)
                 i.append(None)
+                i.append(copy.get(int(i[0])))
             else:
                 i.append(hashcolor.get(i[0]))
+                i.append(copy.get(int(i[0])))
+                if copy.get(int(i[0]))!=None and  copy.get(int(i[0]))>0:
+                    print(i[0],hashcolor.get(i[0]),copy.get(int(i[0])))
+
         print("未找到人数",c)
 
 
@@ -259,5 +266,7 @@ def cal(a,b,c,d,e=None):
             # j为分段
             print(stcol[i], "占",j,"比例", st[i][j] / (st[0][j]+st[1][j]+st[2][j]+st[3][j]))
         print()
+
+
 
 
