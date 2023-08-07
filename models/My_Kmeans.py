@@ -57,7 +57,7 @@ def my_kmeans(X=None):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=FutureWarning, module="sklearn", lineno=1412)
         model = KMeans(n_clusters=CONTROL.Global.KMEANSCLUSTER)
-        model.fit(X[:, :8])
+        model.fit(X[:, :8 ])
     # 模型拟合
 
     # 为每个示例分配一个集群
