@@ -1,9 +1,7 @@
 import csv
 import os
-
 import numpy as np
 from matplotlib import pyplot
-
 import CONTROL.Global
 from CONTROL.Global import FILEREAD_LINES_TEST
 from dataprocess.hash import HashMap
@@ -39,7 +37,8 @@ def readcopy():
         #     nptest=np.asarray([[(int)(tmp[0]),tmp[2]]for tmp in test])
         #     pyplot.scatter(nptest[:,0],nptest[:,1])
         #     pyplot.show()
-    print(idlist)
+    if CONTROL.Global.COPYIDSHOW:
+        print(idlist)
     for i in idlist:
         if copytimes.get(i) == None:
             copytimes.put(i, 1)

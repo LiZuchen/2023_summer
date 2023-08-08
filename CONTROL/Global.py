@@ -1,6 +1,7 @@
-#output control
+
 from dataprocess.hash import HashMap
 
+#output control
 PROCESS_DETAIL=1
 SUBTIME_DATAIL=0
 FIRSTSUBMIT_DETAIL=0
@@ -13,14 +14,21 @@ SCOREON=0
 LONGTAILLOGDETAIL=0
 SHORTTAILEXPDETAIL=0
 CHECKFORCOL=0
-LESSTHANLEASTSUBMITSHOW=1
+LESSTHANLEASTSUBMITSHOW=0
 MAPZEROSHOW=0
 FIGTITLESHOW=0
 RAWFIGSHOW=0
 COPYTIMESSHOW=0
+COPYIDSHOW=0
+
+COLORMAP_READIN_SHOW=0
+
+NOFIND_INCOLORMAP_SHOW=0
 #para control
 LEASTSUBMIT=15
 KMEANSCLUSTER=4
+SCOREAREAS=4
+
 LONGTAIL_ZERO_ADD=0.0001
 LONGTAIL_INF_ALT= 1000000000
 COLLIST=[
@@ -55,7 +63,8 @@ DELETELESSSUBMIT=1
 COMPARE_ON=1
 #PATH CONTROL
 RAW_FIGSAVE_PATH="C:\\Users\\11858\\Desktop\\暑期\\data\\rawfigs\\"
-FIGSAVE_PATH="C:\\Users\\11858\\Desktop\\暑期\\data\\myfigs\\"
+X2_FIGSAVE_PATH= "C:\\Users\\11858\\Desktop\\暑期\\data\\myfigs\\"
+RESULT_FIGSAVE_PATH= "C:\\Users\\11858\\Desktop\\暑期\\data\\统计数据\\"
 #DATA PROCESS CONTROL log
 hashlog=HashMap()
 hashlog.put( "投入时间",1)#5
@@ -79,11 +88,7 @@ hashexp.put("首次提交时间和最早提交者的时间差",1)#11
 #DRAWCONTROL
 COLORLIST_NAME=['blue','red','orange','green','yellow']
 COLORLIST_RGB=["#1F77B4","#D62728","#FF7F0E","#2CA02C","#fff400"]
-# hashcolor=HashMap()
-# hashcolor.put(662,0)
-# hashcolor.put(261,1)
-# hashcolor.put(384,2)
-# hashcolor.put(119,3)
+
 #RESULTCONTROL
 STDID_SHOW=0
 STDNUM_SHOW=1

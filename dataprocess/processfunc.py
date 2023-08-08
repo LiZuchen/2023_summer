@@ -220,13 +220,13 @@ def merge(column):
     for i in linked_list:
         for j in i.get_list():
             if j.get_val()<CONTROL.Global.LEASTSUBMIT:
-                if CONTROL.Global.LESSTHANLEASTSUBMITSHOW:
-                    print(j.get_key(), j.get_val())
+                if CONTROL.Global.LESSTHANLEASTSUBMITSHOW and CONTROL.Global.DELETELESSSUBMIT:
+                    print(j.get_key(), j.get_val(),"will be deleted")
                 if CONTROL.Global.DELETELESSSUBMIT:
-                    print("delete ",j.get_key(),j.get_val())
                     re.delete(j.get_key())
                     delnum+=1
-    print("共删除：",delnum)
+    if CONTROL.Global.DELETELESSSUBMIT:
+        print("共删除提交小于",CONTROL.Global.LEASTSUBMIT,"的人数：",delnum)
 
     if CONTROL.Global.PROCESS_DETAIL:
         print("学号+题目号码->学号 合并完成")

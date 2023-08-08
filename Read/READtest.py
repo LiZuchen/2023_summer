@@ -29,9 +29,9 @@ def readtest():
     if (FILEREAD_LINES_TEST):
         print("读入" + file + "后，当前总共的考试人数: ", len(test))
 
-    if 0:
-        nptest=np.asarray([[(int)(tmp[0]),tmp[2]]for tmp in test])
-        pyplot.scatter(nptest[:,0],nptest[:,1])
-        pyplot.show()
+    # if 0:
+    #     nptest=np.asarray([[(int)(tmp[0]),tmp[2]]for tmp in test])
+    #     pyplot.scatter(nptest[:,0],nptest[:,1])
+    #     pyplot.show()
     return test
 
