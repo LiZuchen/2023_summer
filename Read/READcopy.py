@@ -32,8 +32,8 @@ def readcopy():
                     if tmp!=[]:
                         for i in tmp:
                             tmp1=list(i.split('/'))
-
-                            idlist.append(int(tmp1[1]))
+                            if tmp1[1][0]!='t' and tmp1[1][0]!='s':
+                                idlist.append(int(tmp1[1]))
 
     # if (FILEREAD_LINES_TEST):
     #     print("读入" + file + "后，当前总共的考试人数: ", len(test))
