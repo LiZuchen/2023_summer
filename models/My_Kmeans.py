@@ -113,10 +113,6 @@ def resultshow(stdlist, listnum,copy):
     stdnum = 0
     k = 0
     hashcolor = HashMap()
-    # hashcolor.put('red',[])
-    # hashcolor.put('blue', [])
-    # hashcolor.put('green', [])
-    # hashcolor.put('orange', [])
     t = 0
     for i in stdlist:
         if CONTROL.Global.STDID_SHOW:
