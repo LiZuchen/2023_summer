@@ -6,26 +6,22 @@ from dataprocess import processfunc
 from dataprocess.hash import HashMap
 from dataprocess.processfunc import sub_time, averagetime, actimes, acrate, MinMaxScaler_Single, modifycol, \
     longtail_modify_log, longtail_log, MinMaxScaler_use, check_col, merge, maptolist, map_zero_check, cal_firstsubmit, \
-    maptolist2
-# filename="C:\\Users\\11858\\Desktop\\暑期\\data\\pure\\assigndata1518_2.csv"
+    maptolist2, stdid_to_int
 import os
-from dataprocess import hash
 from models.My_Kmeans import my_kmeans
 
 path = "C:\\Users\\11858\\Desktop\\暑期\\data\\pure"
 dirs = os.listdir(path)
-
-# 输出所有文件和文件夹
-# for file in dirs:
-#    print( file)
 column = []
 filenamelist = []
-# for filename in filenamelist:
+# 输出所有文件和文件夹
+if CONTROL.Global.FILEREAD_NAMES_SHOW:
+    for file in dirs:
+        print( file)
+
 for file in dirs:
     with open(path + "\\" + file, encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
-        # column1=[row for row in reader if(row["题型"] == "编程题")]
-        # print(len(column1))
         for col in reader:
             if col["题型"] == "编程题" \
                     and col["提交次数"] != "-1" \
@@ -69,7 +65,6 @@ if CONTROL.Global.CHECKFORCOL:
 
 firstsubmit = cal_firstsubmit(column)
 # 加入#11列
-copy=readcopy()
 for i in column:
     i.append(sub_time(firstsubmit.get(i[1]), i[3]))
     # i[11]
@@ -81,18 +76,22 @@ if CONTROL.Global.PROCESS_DETAIL:
         for i in range(len(column[0])):
             print(i, CONTROL.Global.COLLIST[i], (type)(column[0][i]))
     print()
-# 引入sklkearn中的归一化模块
-# 归一化
-# 1）获取数据
-Xmap = merge(column)
 
+#MERGE TO X[7]
+Xmap = merge(column)
 col = maptolist2(Xmap)
+#MERGE END
+
+copy=readcopy()
 for i in col:
     if copy.get(int(i[8])) == None:
         i[7]=0
     else:
         i[7]=copy.get(int(i[8]))
-        print(i[8],i[7])
+        if CONTROL.Global.COPYTIMESSHOW:
+            print(i[8],i[7])
+# Now i  in col is X
+
 col = processfunc.process(col)
 
 # check = HashMap()
@@ -105,25 +104,19 @@ col = processfunc.process(col)
 #
 # Xmap=merge(column)
 final = col
-# for x in final:
-#     if x[7] == '20231005':
-#         print(x)
+
 if CONTROL.Global.MAPZEROSHOW:
     map_zero_check(Xmap)
 if CONTROL.Global.FINAL_NUMS_OF_STD:
     print("总计有效人数:", len(final))
 
 # X=np.asarray([tmp[5:] for tmp in column],'f')
-# tmp[7]:std id
-for i in final:
-    try:
-        i[8] = int(i[8])
+# 'f' can cause bug
 
-    except ValueError:
-        print(i[8])
-# list1=[]
-# for tmp in final
-#！！！！！
+stdid_to_int(final)
+# ！！！！！
+
 X = np.asarray([tmp for tmp in final])
 
 my_kmeans(X,copy)
+

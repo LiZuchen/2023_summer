@@ -356,3 +356,10 @@ def process(column):
     MinMaxScaler_use(column, LIST.index("copy"))
 
     return column
+
+def stdid_to_int(final):
+    for i in final:
+        try:
+            i[CONTROL.Global.XLIST.index("学号")] = int(i[CONTROL.Global.XLIST.index("学号")])
+        except ValueError:
+            print("in func stdid_to_int() while at " ,i[CONTROL.Global.XLIST.index("学号")])
