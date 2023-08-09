@@ -1,23 +1,21 @@
 import csv
 import os
-import numpy as np
-from matplotlib import pyplot
 import CONTROL.Global
-from CONTROL.Global import FILEREAD_LINES_TEST
 from dataprocess.hash import HashMap
 
-path = "C:\\Users\\11858\\Desktop\\暑期\\data\\查重"
-file = "作业7.csv"
-dirs = os.listdir(path)
-if CONTROL.Global.FILEREAD_NAMES_SHOW:
-    for i in dirs:
-        print(i)
-namelist = []
-idlist = []
-copytimes = HashMap()
+
 
 
 def readcopy():
+    path = "C:\\Users\\11858\\Desktop\\暑期\\data\\查重"
+    # file = "作业7.csv"
+    dirs = os.listdir(path)
+    if CONTROL.Global.FILEREAD_NAMES_SHOW:
+        for i in dirs:
+            print(i)
+    namelist = []
+    idlist = []
+    copytimes = HashMap()
     for file in dirs:
         with open(path + "\\" + file, encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)

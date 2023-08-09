@@ -17,7 +17,7 @@ filenamelist = []
 # 输出所有文件和文件夹
 if CONTROL.Global.FILEREAD_NAMES_SHOW:
     for file in dirs:
-        print( file)
+        print(file)
 
 for file in dirs:
     with open(path + "\\" + file, encoding='utf-8') as csvfile:
