@@ -1,8 +1,8 @@
 import numpy as np
-from matplotlib import pyplot as plt
-from CONTROL.Global import cnl, XLIST, RESULT_FIGSAVE_PATH
+from matplotlib import pyplot as plt, cm
+from CONTROL.Global import cnl, XLIST, RESULT_FIGSAVE_PATH, rgb_word, color_word
 
-
+fig_save_path=RESULT_FIGSAVE_PATH
 # labels=np.array([u"推进","KDA",u"生存",u"团战",u"发育",u"输出"])
 # stats=[83, 61, 95, 67, 76, 88]
 # # 画图数据准备，角度、状态值
@@ -99,7 +99,7 @@ def draw_demo1(X,color):
     angles=np.concatenate((angles,[angles[0]]))
 
     # ⽤Matplotlib画蜘蛛图
-    fig = plt.figure(figsize=(9,9))
+    fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, polar=True)
     ax.plot(angles, stats, 'o-', linewidth=2,color=color) # 连线
     ax.fill(angles, stats, alpha=0.25,c=color) # 填充
@@ -110,18 +110,20 @@ def draw_demo1(X,color):
                   fontsize = 18)
 
     ax.set_rgrids([0.2,0.4,0.6,0.8,1.0],fontsize = 18)
+    plt.title(rgb_word.get(color)[:5],fontsize = 40,pad=20)
+    plt.savefig(fig_save_path +rgb_word.get(color)[:5]+"雷达图" + ".png")
     plt.show()
 
 def draw_demo3(XALL,colorall):
 #学生X的雷达图向量
-    fig_save_path=RESULT_FIGSAVE_PATH
+
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     labels = np.array(XLIST[:7] + ["抄袭次数"])
     # 画图数据准备，⻆度、状态值
     angles=np.linspace(0, 2*np.pi, len(labels), endpoint=False)
     labels = np.concatenate((labels, [labels[0]]))
         # ⽤Matplotlib画蜘蛛图
-    fig = plt.figure(figsize=(9,9))
+    fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, polar=True)
     angles = np.concatenate((angles, [angles[0]]))
     for i in range(len(XALL)):
@@ -138,6 +140,89 @@ def draw_demo3(XALL,colorall):
                   fontsize = 18)
 
     ax.set_rgrids([0.2,0.4,0.6,0.8,1.0],fontsize = 18)
+    plt.title("雷达图合并版", fontsize=40, pad=20)
     plt.savefig(fig_save_path+"雷达图合并版"+".png")
     plt.show()
 
+def draw_demo4(ifshowmax=1):
+    xl=['blue','red','orange','green']
+    blue=[50, 14, 6, 1]
+    bc=["#1976D2","#2196F3","#00BCD4","#BBDEFB"]
+    red=[114, 77, 63, 0]
+    rc=["#C2185B","#E91E63","#FF5252","#F8BBD0"]
+    orange=[30, 52, 409, 29]
+    oc=["#F57C00","#FF9800","#FFC107","#FFE0B2"]
+    green=[81, 89, 376, 16]
+    gc=["#388E3C","#4CAF50","#8BC34A","#C8E6C9"]
+    all= [blue,red,orange,green]
+    colorss = [bc,rc,oc,gc]
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+    fig=plt.figure(figsize=(20, 20))
+    # fig, axes = plt.subplots(2, 2)
+    # ax1 = axes[0, 0]
+    # ax2 = axes[0, 1]
+    # ax3 = axes[1, 0]
+    # ax4 = axes[1, 1]
+    for i in range(0, len(all)):
+        # 将画布设定为正方形，则绘制的饼图是正圆
+        axi=fig.add_subplot(2, 2, i + 1)
+        label = ['0-9分', '10-19分', '20-29分', '30分及以上']  # 定义饼图的标签，标签是列表
+        explode = [0.001, 0.001, 0.001,0.001] # 设定各项距离圆心n个半径
+        if ifshowmax:
+            explode[all[i].index(max(all[i]))] = 0.1
+
+        # plt.pie(values[-1,3:6],explode=explode,labels=label,autopct='%1.1f%%')#绘制饼图
+        values = all[i]
+        textprops = {'color': 'k',  # 文本颜色
+                     'fontsize': 20,  # 文本大小
+                     'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
+                     }
+
+        axi.pie(values, explode=explode, labels=label, autopct='%1.1f%%', colors=colorss[i],
+                textprops=textprops)  # 绘制饼图
+        axi.legend()
+        axi.set_title(color_word.get(xl[i])[0:5] + "各分段占比", fontsize=40)  # 绘制标题
+        # plt.savefig(fig_save_path + xl[i] + "饼状图")
+        # 保存图片
+    fig.suptitle("各颜色各不同分段占比", fontsize=80)
+    fig.savefig(fig_save_path + "各颜色各不同分段占比" + "饼状图")  # 保存图片
+    fig.show()
+draw_demo4()
+
+def draw_demo5(ifshowmax=0):
+    xl = ['blue', 'red', 'orange', 'green']
+    blue = [50, 14, 6, 1]
+    bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
+    red = [114, 77, 63, 0]
+    rc = ["#C2185B", "#E91E63", "#FF5252", "#F8BBD0"]
+    orange = [30, 52, 409, 29]
+    oc = ["#F57C00", "#FF9800", "#FFC107", "#FFE0B2"]
+    green = [81, 89, 376, 16]
+    gc = ["#388E3C", "#4CAF50", "#8BC34A", "#C8E6C9"]
+    all = [blue, red, orange, green]
+    colorss = [bc, rc, oc, gc]
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+
+    for i in range(0,len(all)):
+         # 将画布设定为正方形，则绘制的饼图是正圆
+        fig = plt.figure(figsize=(10, 10))
+        ax=fig.add_subplot(111)
+        label = ['0-9分', '10-19分', '20-29分','30分及以上']  # 定义饼图的标签，标签是列表
+        explode = [0.001, 0.001, 0.001,0.001]  # 设定各项距离圆心n个半径
+        if ifshowmax:
+            explode[all[i].index(max(all[i]))]=0.1
+        # plt.pie(values[-1,3:6],explode=explode,labels=label,autopct='%1.1f%%')#绘制饼图
+        values = all[i]
+        textprops = {'color': 'k',  # 文本颜色
+                 'fontsize': 20,  # 文本大小
+                 'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
+                 }
+
+        ax.pie(values, explode=explode, labels=label, autopct='%1.1f%%',colors=colorss[i],textprops=textprops)  # 绘制饼图
+        ax.set_title(color_word.get(xl[i])[0:5]+"各分段占比",fontsize=40)  # 绘制标题
+        ax.legend(loc='best',fontsize=15)
+        fig.savefig(fig_save_path+xl[i]+"饼状图")  # 保存图片
+        fig.show()
+
+
+draw_demo5(0)
