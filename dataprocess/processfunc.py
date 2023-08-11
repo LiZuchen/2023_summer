@@ -10,14 +10,14 @@ from dataprocess.hash import HashMap
 
 
 #fafafa
-def MinMaxScaler_Single(data):
+def MinMaxScaler_Single(data,x=0,y=1):
     '''
     :param data: list[]
     :return: ndarray
     '''
     data=np.asarray(data)
     # #2)实例化一个转换器类
-    transfer=MinMaxScaler(feature_range=(0,1))   #rang范围可改变
+    transfer=MinMaxScaler(feature_range=(x,y))   #rang范围可改变
     # #3)调用transform转换
     data_new=transfer.fit_transform(data.reshape(-1,1))
     return data_new
@@ -111,9 +111,9 @@ def longtail_modify_log(data):
                 print("data i error:",datai)
     return np.asarray(datanew,'f').reshape(-1,1)
 
-def MinMaxScaler_use(column,number):
+def MinMaxScaler_use(column,number,x=0,y=1):
     data = [tmp[number] for tmp in column]
-    timessubmit_std = MinMaxScaler_Single(data)
+    timessubmit_std = MinMaxScaler_Single(data,x,y)
     modifycol(column, timessubmit_std, number)
 
 def longtail_log(column,number):
@@ -294,7 +294,11 @@ def cal_firstsubmit(column):
         else:
             firstsubmit.put(i[1], i[3])
     return firstsubmit
-
+def process_xall(xall):
+    x=0.2
+    y=0.8
+    for i in range(len(xall[0])):
+        MinMaxScaler_use(xall, i,x,y)
 def process(column):
     # LIST=CONTROL.Global.COLLIST
     LIST=CONTROL.Global.XLIST

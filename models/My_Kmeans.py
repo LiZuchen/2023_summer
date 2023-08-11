@@ -6,8 +6,10 @@ from sklearn import metrics
 from sklearn.cluster import KMeans
 import CONTROL
 from CONTROL.Global import FIGTITLESHOW
+from DrawPicture.show import draw_demo1, draw_demo3
 from Read.READtest import readtest
 from dataprocess.hash import HashMap
+from dataprocess.processfunc import process_xall
 
 
 def draw(X, yhat, clusters, x_num, y_num, listnum):
@@ -95,11 +97,34 @@ def my_kmeans(X=None, copy=None):
     # listnum 指定各人数对应的颜色
     # 结果展示
     resultshow(stdlist, listnum, copy)
+    xall_average=[]
+    color_all=[]
+    for cluster in clusters:
+        rgb = CONTROL.Global.COLORLIST_RGB
+        # rgb 为 蓝 红 橙 绿
+        k = 0
+        row_ix = where(yhat == cluster)
+        # 创建这些样本的散布
+        # pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num], c=rgb[listnum.index(row_ix[0].size)])
+        k += 1
+        x_average=[]
+        for i in range(8):
+            x_sum=0
+            for j in row_ix[0]:
+                x_sum+=X[j,i]/row_ix[0].size
+            x_average.append(x_sum)
+        # draw_demo1(x_average,rgb[listnum.index(row_ix[0].size)])
+        xall_average.append(x_average)
+        color_all.append(rgb[listnum.index(row_ix[0].size)])
+    process_xall(xall_average)
+    for i in range(len(xall_average)):
+        draw_demo1(xall_average[i],color_all[i])
 
-    # draw
-    for i in range(8):
-        for j in range(i + 1, 8):
-            draw(X, yhat, clusters, i, j, listnum)
+    draw_demo3(xall_average,color_all)
+    # draw2维图像
+    # for i in range(8):
+    #     for j in range(i + 1, 8):
+    #         draw(X, yhat, clusters, i, j, listnum)
 
 
 def resultshow(stdlist, listnum, copy):

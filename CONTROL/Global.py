@@ -1,6 +1,7 @@
 
 from dataprocess.hash import HashMap
-
+#
+version="1.1.2"
 #output control
 PROCESS_DETAIL=1
 SUBTIME_DATAIL=0
@@ -65,6 +66,7 @@ COMPARE_ON=1
 RAW_FIGSAVE_PATH="C:\\Users\\11858\\Desktop\\暑期\\data\\rawfigs\\"
 X2_FIGSAVE_PATH= "C:\\Users\\11858\\Desktop\\暑期\\data\\myfigs\\"
 RESULT_FIGSAVE_PATH= "C:\\Users\\11858\\Desktop\\暑期\\data\\统计数据\\"
+
 #DATA PROCESS CONTROL log
 hashlog=HashMap()
 hashlog.put( "投入时间",1)#5
@@ -92,3 +94,6 @@ COLORLIST_RGB=["#1F77B4","#D62728","#FF7F0E","#2CA02C","#fff400"]
 #RESULTCONTROL
 STDID_SHOW=0
 STDNUM_SHOW=1
+
+#font
+cnl = "STSong"
