@@ -187,7 +187,7 @@ def draw_demo4(ifshowmax=1):
     fig.suptitle("各颜色各不同分段占比", fontsize=80)
     fig.savefig(fig_save_path + "各颜色各不同分段占比" + "饼状图")  # 保存图片
     fig.show()
-draw_demo4()
+
 
 def draw_demo5(ifshowmax=0):
     xl = ['blue', 'red', 'orange', 'green']
@@ -207,6 +207,7 @@ def draw_demo5(ifshowmax=0):
          # 将画布设定为正方形，则绘制的饼图是正圆
         fig = plt.figure(figsize=(10, 10))
         ax=fig.add_subplot(111)
+
         label = ['0-9分', '10-19分', '20-29分','30分及以上']  # 定义饼图的标签，标签是列表
         explode = [0.001, 0.001, 0.001,0.001]  # 设定各项距离圆心n个半径
         if ifshowmax:
@@ -218,11 +219,85 @@ def draw_demo5(ifshowmax=0):
                  'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
                  }
 
-        ax.pie(values, explode=explode, labels=label, autopct='%1.1f%%',colors=colorss[i],textprops=textprops)  # 绘制饼图
+        ax.pie(values, explode=explode, labels=label, autopct='%1.1f%%',colors=colorss[i],textprops=textprops,)  # 绘制饼图
         ax.set_title(color_word.get(xl[i])[0:5]+"各分段占比",fontsize=40)  # 绘制标题
-        ax.legend(loc='best',fontsize=15)
+        ax.legend(fontsize=15)
+
         fig.savefig(fig_save_path+xl[i]+"饼状图")  # 保存图片
         fig.show()
 
 
-draw_demo5(0)
+
+
+def draw_demo6():
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import ConnectionPatch
+    import numpy as np
+    xl = ['blue', 'red', 'orange', 'green']
+    blue = [50, 14, 6, 1]
+    bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
+    red = [114, 77, 63, 0]
+    rc = ["#C2185B", "#E91E63", "#FF5252", "#F8BBD0"]
+    orange = [30, 52, 409, 29]
+    oc = ["#F57C00", "#FF9800", "#FFC107", "#FFE0B2"]
+    green = [81, 89, 376, 16]
+    gc = ["#388E3C", "#4CAF50", "#8BC34A", "#C8E6C9"]
+    all = [blue, red, orange, green]
+    colorss = [bc, rc, oc, gc]
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+    # make figure and assign axis objects
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 5))
+    fig.subplots_adjust(wspace=0)
+
+    # pie chart parameters
+    overall_ratios = [.27, .56, .17]
+    labels = ['Approve', 'Disapprove', 'Undecided']
+    explode = [0.1, 0, 0]
+    # rotate so that first wedge is split by the x-axis
+    angle = -180 * overall_ratios[0]
+    wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%', startangle=angle,
+                         labels=labels, explode=explode)
+
+    # bar chart parameters
+    age_ratios = [.33, .54, .07, .06]
+    age_labels = ['Under 35', '35-49', '50-65', 'Over 65']
+    bottom = 1
+    width = .2
+
+    # Adding from the top matches the legend.
+    for j, (height, label) in enumerate(reversed([*zip(age_ratios, age_labels)])):
+        bottom -= height
+        bc = ax2.bar(0, height, width, bottom=bottom, color='C0', label=label,
+                     alpha=0.1 + 0.25 * j)
+        ax2.bar_label(bc, labels=[f"{height:.0%}"], label_type='center')
+
+    ax2.set_title('Age of approvers')
+    ax2.legend()
+    ax2.axis('off')
+    ax2.set_xlim(- 2.5 * width, 2.5 * width)
+
+    # use ConnectionPatch to draw lines between the two plots
+    theta1, theta2 = wedges[0].theta1, wedges[0].theta2
+    center, r = wedges[0].center, wedges[0].r
+    bar_height = sum(age_ratios)
+
+    # draw top connecting line
+    x = r * np.cos(np.pi / 180 * theta2) + center[0]
+    y = r * np.sin(np.pi / 180 * theta2) + center[1]
+    con = ConnectionPatch(xyA=(-width / 2, bar_height), coordsA=ax2.transData,
+                          xyB=(x, y), coordsB=ax1.transData)
+    con.set_color([0, 0, 0])
+    con.set_linewidth(4)
+    ax2.add_artist(con)
+
+    # draw bottom connecting line
+    x = r * np.cos(np.pi / 180 * theta1) + center[0]
+    y = r * np.sin(np.pi / 180 * theta1) + center[1]
+    con = ConnectionPatch(xyA=(-width / 2, 0), coordsA=ax2.transData,
+                          xyB=(x, y), coordsB=ax1.transData)
+    con.set_color([0, 0, 0])
+    ax2.add_artist(con)
+    con.set_linewidth(4)
+
+    plt.show()
+draw_demo6()
