@@ -116,7 +116,7 @@ def draw_demo1(X,color):
 
 def draw_demo3(XALL,colorall):
 #学生X的雷达图向量
-
+#合并版
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     labels = np.array(XLIST[:7] + ["抄袭次数"])
     # 画图数据准备，⻆度、状态值
@@ -145,6 +145,7 @@ def draw_demo3(XALL,colorall):
     plt.show()
 
 def draw_demo4(ifshowmax=1):
+    #各颜色各不同分段占比
     xl=['blue','red','orange','green']
     blue=[50, 14, 6, 1]
     bc=["#1976D2","#2196F3","#00BCD4","#BBDEFB"]
@@ -185,11 +186,13 @@ def draw_demo4(ifshowmax=1):
         # plt.savefig(fig_save_path + xl[i] + "饼状图")
         # 保存图片
     fig.suptitle("各颜色各不同分段占比", fontsize=80)
+    print("from draw4",fig_save_path + "各颜色各不同分段占比" + "饼状图")
     fig.savefig(fig_save_path + "各颜色各不同分段占比" + "饼状图")  # 保存图片
     fig.show()
 
 
 def draw_demo5(ifshowmax=0):
+    #各个颜色本身各分段占比
     xl = ['blue', 'red', 'orange', 'green']
     blue = [50, 14, 6, 1]
     bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
@@ -222,7 +225,7 @@ def draw_demo5(ifshowmax=0):
         ax.pie(values, explode=explode, labels=label, autopct='%1.1f%%',colors=colorss[i],textprops=textprops,)  # 绘制饼图
         ax.set_title(color_word.get(xl[i])[0:5]+"各分段占比",fontsize=40)  # 绘制标题
         ax.legend(fontsize=15)
-
+        print("from draw5",fig_save_path+xl[i]+"饼状图")
         fig.savefig(fig_save_path+xl[i]+"饼状图")  # 保存图片
         fig.show()
 
@@ -248,74 +251,84 @@ def draw_demo6():
     colorss = [bc, rc, oc, gc]
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     # make figure and assign axis objects
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
-    fig.subplots_adjust(wspace=0.3)
+    for l in range(0, 4):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
+        fig.subplots_adjust(wspace=0.3)
 
     # pie chart parameters---->各分段人总数
-    overall_ratios=[0,0,0,0]
-    for i in range(len(all[0])):
-        for j in range(len(all)):
-            overall_ratios[i]+=all[j][i]
-    print(overall_ratios)
-    labels = ['0-9分', '10-19分', '20-29分','30分及以上']
-    explode = [0.001, 0.001, 0.001,0.001]
+        overall_ratios=[0,0,0,0]
+        for i in range(len(all[0])):
+            for j in range(len(all)):
+                overall_ratios[i]+=all[j][i]
+
+        labels = ['0-9分', '10-19分', '20-29分','30分及以上']
+        explode = [0.001, 0.001, 0.001,0.001]
     # rotate so that first wedge is split by the x-axis
     # angle = -180 * overall_ratios[0]
-    textprops = {'color': 'k',  # 文本颜色
+        textprops = {'color': 'k',  # 文本颜色
                  'fontsize': 18,  # 文本大小
                  'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
                  }
-    wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%',colors=score_color,
-                         labels=labels, explode=explode,radius=1.5,textprops=textprops)
-    ax1.set_title("总成绩分数段",pad=80,fontsize=40)
+        wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%',colors=score_color,
+                         labels=labels, explode=explode,radius=1.5,textprops=textprops,startangle=-360*sum(overall_ratios[0:l])/sum(overall_ratios))
+        ax1.set_title("总成绩分数段",pad=80,fontsize=40)
 
 
 
 
     # bar chart parameters------>该分段人的比例
-    age_ratios = [all[0][0]/overall_ratios[0], all[1][0]/overall_ratios[0],all[2][0]/overall_ratios[0],all[3][0]/overall_ratios[0]]
-    age_labels = ['抄袭作业型', '学习困难型', '游刃有余型', '学习努力型']
-    bottom = 1
-    width = .2
+        age_labels = ['抄袭作业型', '学习困难型', '游刃有余型', '学习努力型']
+        bottom = 1
+        width = .2
+    # age_ratios = [all[0][0]/overall_ratios[0], all[1][0]/overall_ratios[0],all[2][0]/overall_ratios[0],all[3][0]/overall_ratios[0]]
+
+        age_ratios = [all[0][l] / overall_ratios[l],
+                  all[1][l] / overall_ratios[l],
+                  all[2][l] / overall_ratios[l],
+                  all[3][l] / overall_ratios[l]]
+
+
+
 
     # Adding from the top matches the legend.
-    k=0
-    for j, (height, label) in enumerate(([*zip(age_ratios, age_labels)])):
-        bottom -= height
-        bc1 = ax2.bar(0, height, width, bottom=bottom, color=COLORLIST_RGB[k], label=label,alpha=0.5)
-        ax2.bar_label(bc1, labels=[f"{height:.0%}"], label_type='center')
-        k+=1
-    ax2.set_title('该分段各个颜色比例',fontsize=20)
-    ax2.legend(loc=(0.70,0.4),fontsize=15)
-    ax2.axis('off')
-    ax2.set_xlim(- 2.5 * width, 2.5 * width)
+        k=0
+        for j, (height, label) in enumerate(([*zip(age_ratios, age_labels)])):
+            bottom -= height
+            bc1 = ax2.bar(0, height, width, bottom=bottom, color=COLORLIST_RGB[k], label=label,alpha=0.5)
+            ax2.bar_label(bc1, labels=[f"{height:.0%}"], label_type='center')
+            k+=1
+        ax2.set_title('该分段各个颜色比例',fontsize=20)
+        ax2.legend(loc=(0.70,0.4),fontsize=15)
+        ax2.axis('off')
+        ax2.set_xlim(- 2.5 * width, 2.5 * width)
 
     # use ConnectionPatch to draw lines between the two plots
-    theta1, theta2 = wedges[0].theta1, wedges[0].theta2
-    center, r = wedges[0].center, wedges[0].r
-    bar_height = sum(age_ratios)
+        theta1, theta2 = wedges[l].theta1, wedges[l].theta2
+        center, r = wedges[0].center, wedges[0].r
+        bar_height = sum(age_ratios)
 
     # draw top connecting line
-    x = r * np.cos(np.pi / 180 * theta2) + center[0]
-    y = r * np.sin(np.pi / 180 * theta2) + center[1]
-    con = ConnectionPatch(xyA=(-width / 2, bar_height), coordsA=ax2.transData,
+        x = r * np.cos(np.pi / 180 * theta2) + center[0]
+        y = r * np.sin(np.pi / 180 * theta2) + center[1]
+        con = ConnectionPatch(xyA=(-width / 2, bar_height), coordsA=ax2.transData,
                           xyB=(x, y), coordsB=ax1.transData,
                           arrowstyle="<|-|>")
-    con.set_color([0, 0, 0])
-    con.set_linewidth(1)
-    ax2.add_artist(con)
+        con.set_color([0, 0, 0])
+        con.set_linewidth(1)
+        ax2.add_artist(con)
 
     # draw bottom connecting line
-    x = r * np.cos(np.pi / 180 * theta1) + center[0]
-    y = r * np.sin(np.pi / 180 * theta1) + center[1]
-    con = ConnectionPatch(xyA=(-width / 2, 0), coordsA=ax2.transData,
+        x = r * np.cos(np.pi / 180 * theta1) + center[0]
+        y = r * np.sin(np.pi / 180 * theta1) + center[1]
+        con = ConnectionPatch(xyA=(-width / 2, 0), coordsA=ax2.transData,
                           xyB=(x, y), coordsB=ax1.transData,
                           arrowstyle="<|-|>")
-    con.set_color([0, 0, 0])
-    ax2.add_artist(con)
-    con.set_linewidth(1)
-
-    plt.show()
+        con.set_color([0, 0, 0])
+        ax2.add_artist(con)
+        con.set_linewidth(1)
+        print("from draw6", fig_save_path + "pie-bar" + labels[l] + "各颜色")
+        plt.savefig(fig_save_path + "pie-bar" + labels[l] + "各颜色")
+        fig.show()
 
 
 def draw_demo7():
@@ -336,75 +349,81 @@ def draw_demo7():
     colorss = [bc, rc, oc, gc]
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     # make figure and assign axis objects
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
-    fig.subplots_adjust(wspace=0.3)
-    overall_ratios = [0, 0, 0, 0]
-    for j in range(len(all)):
-        overall_ratios[j] = sum(all[j])
+    for l in range(0,4):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
+        fig.subplots_adjust(wspace=0.3)
+        overall_ratios = [0, 0, 0, 0]
+        for j in range(len(all)):
+            overall_ratios[j] = sum(all[j])
     # pie chart parameters---->各颜色人数
 
-    print(overall_ratios)
-    labels = ['蓝色', '红色', '橙色', '绿色']
-    explode = [0.001, 0.001, 0.001, 0.001]
+
+        labels = ['蓝色', '红色', '橙色', '绿色']
+        explode = [0.001, 0.001, 0.001, 0.001]
     # rotate so that first wedge is split by the x-axis
     # angle = -180 * overall_ratios[0]
-    textprops = {'color': 'k',  # 文本颜色
-                 'fontsize': 18,  # 文本大小
-                 'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
-                 }
-    wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%', startangle=0,
-                         labels=labels, explode=explode,colors=COLORLIST_RGB,textprops=textprops,radius=1.5)
-    ax1.set_title("总人数颜色分布", pad=80, fontsize=40)
+        textprops = {'color': 'k',  # 文本颜色
+                    'fontsize': 18,  # 文本大小
+                    'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
+                    }
+        wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%',
+                         labels=labels, explode=explode,colors=COLORLIST_RGB,
+                             textprops=textprops,radius=1.5,
+                             startangle=-360*sum(overall_ratios[0:l])/sum(overall_ratios))
+        ax1.set_title("总人数颜色分布", pad=80, fontsize=40)
 
 
 
 
 
     # bar chart parameters------>该分段人的比例
-    age_ratios = [all[0][0] / overall_ratios[0], all[0][1] / overall_ratios[0], all[0][2] / overall_ratios[0],
-                  all[0][3] / overall_ratios[0]]
+        age_ratios = [all[l][0] / overall_ratios[l],
+                      all[l][1] / overall_ratios[l],
+                      all[l][2] / overall_ratios[l],
+                        all[l][3] / overall_ratios[l]]
 
-    age_labels = ['0-9分', '10-19分', '20-29分','30分及以上']
-    bottom = 1
-    width = .2
+        age_labels = ['0-9分', '10-19分', '20-29分','30分及以上']
+        bottom = 1
+        width = .2
 
     # Adding from the top matches the legend.
-    k = 0
-    for j, (height, label) in enumerate(reversed([*zip(age_ratios, age_labels)])):
-        bottom -= height
-        bc1 = ax2.bar(0, height, width, bottom=bottom, color=bc[3-k], label=label,
+        k = 0
+        for j, (height, label) in enumerate(reversed([*zip(age_ratios, age_labels)])):
+            bottom -= height
+            bc1 = ax2.bar(0, height, width, bottom=bottom, color=colorss[l][3-k], label=label,
                      alpha=0.8)
-        ax2.bar_label(bc1, labels=[f"{height:.0%}"], label_type='center')
-        k += 1
-    ax2.set_title('该颜色各个分段比例',fontsize=20)
-    ax2.legend(loc=(0.70, 0.4), fontsize=15)
-    ax2.axis('off')
-    ax2.set_xlim(- 2.5 * width, 2.5 * width)
+            ax2.bar_label(bc1, labels=[f"{height:.0%}"], label_type='center')
+            k += 1
+        ax2.set_title('该颜色各个分段比例',fontsize=20)
+        ax2.legend(loc=(0.70, 0.4), fontsize=15)
+        ax2.axis('off')
+        ax2.set_xlim(- 2.5 * width, 2.5 * width)
 
     # use ConnectionPatch to draw lines between the two plots
-    theta1, theta2 = wedges[0].theta1, wedges[0].theta2
-    center, r = wedges[0].center, wedges[0].r
-    bar_height = sum(age_ratios)
+        theta1, theta2 = wedges[l].theta1, wedges[l].theta2
+        center, r = wedges[0].center, wedges[0].r
+        bar_height = sum(age_ratios)
 
     # draw top connecting line
-    x = r * np.cos(np.pi / 180 * theta2) + center[0]
-    y = r * np.sin(np.pi / 180 * theta2) + center[1]
-    con = ConnectionPatch(xyA=(-width / 2, bar_height), coordsA=ax2.transData,
+        x = r * np.cos(np.pi / 180 * theta2) + center[0]
+        y = r * np.sin(np.pi / 180 * theta2) + center[1]
+        con = ConnectionPatch(xyA=(-width / 2, bar_height), coordsA=ax2.transData,
                           xyB=(x, y), coordsB=ax1.transData,arrowstyle="<|-|>")
-    con.set_color([0, 0, 0])
-    con.set_linewidth(1)
-    ax2.add_artist(con)
+        con.set_color([0, 0, 0])
+        con.set_linewidth(1)
+        ax2.add_artist(con)
 
     # draw bottom connecting line
-    x = r * np.cos(np.pi / 180 * theta1) + center[0]
-    y = r * np.sin(np.pi / 180 * theta1) + center[1]
-    con = ConnectionPatch(xyA=(-width / 2, 0), coordsA=ax2.transData,
+        x = r * np.cos(np.pi / 180 * theta1) + center[0]
+        y = r * np.sin(np.pi / 180 * theta1) + center[1]
+        con = ConnectionPatch(xyA=(-width / 2, 0), coordsA=ax2.transData,
                           xyB=(x, y), coordsB=ax1.transData,arrowstyle="<|-|>")
-    con.set_color([0, 0, 0])
-    ax2.add_artist(con)
-    con.set_linewidth(1)
-
-    plt.show()
+        con.set_color([0, 0, 0])
+        ax2.add_artist(con)
+        con.set_linewidth(1)
+        print("from draw7",fig_save_path+"pie-bar"+labels[l]+"各分段")
+        plt.savefig(fig_save_path+"pie-bar"+labels[l]+"各分段")
+        fig.show()
 draw_demo4()
 draw_demo5()
 draw_demo6()
