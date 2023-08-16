@@ -6,13 +6,13 @@ from sklearn import metrics
 from sklearn.cluster import KMeans
 import CONTROL
 from CONTROL.Global import FIGTITLESHOW
-from DrawPicture.show import draw_demo1, draw_demo3
+from DrawPicture.show import draw_demo1, draw_demo3, draw_demo0, draw_demo4, draw_demo5, draw_demo7, draw_demo6
 from Read.READtest import readtest
 from dataprocess.hash import HashMap
 from dataprocess.processfunc import process_xall
 
 
-def draw(X, yhat, clusters, x_num, y_num, listnum):
+def draw2(X, yhat, clusters, x_num, y_num, listnum):
     # 为每个群集的样本创建散点图
     rgb = CONTROL.Global.COLORLIST_RGB
     # rgb 为 蓝 红 橙 绿
@@ -93,10 +93,11 @@ def my_kmeans(X=None, copy=None):
         ele = X[row_ix, 8].tolist()[0]
         stdlist.append(ele)
         k += 1
-    # stdlist按乱序装入各个学生
+    # stdlist按乱序装入各个学生的ID
     # listnum 指定各人数对应的颜色
     # 结果展示
-    resultshow(stdlist, listnum, copy)
+    num_all=resultshow(stdlist, listnum, copy)
+
     xall_average=[]
     color_all=[]
     for cluster in clusters:
@@ -121,13 +122,21 @@ def my_kmeans(X=None, copy=None):
         draw_demo1(xall_average[i],color_all[i])
 
     draw_demo3(xall_average,color_all)
+
+    draw_demo0(X,yhat,listnum)
+
+    draw_demo4(num_all)
+    draw_demo5(num_all)
+    draw_demo6(num_all)
+    draw_demo7(num_all)
     # draw2维图像
     # for i in range(8):
     #     for j in range(i + 1, 8):
-    #         draw(X, yhat, clusters, i, j, listnum)
+    #         draw2(X, yhat, clusters, i, j, listnum)
 
 
 def resultshow(stdlist, listnum, copy):
+    #主要分析 最后成绩和学生各个颜色的关系
     stdnum = 0
     hashcolor = HashMap()
     addtimes = 0
@@ -267,7 +276,7 @@ def resultshow(stdlist, listnum, copy):
 
         #量化比例计算
         cal(first, second, third, fourth)
-
+        return all
 
 def cal(a, b, c, d, e=None):
 

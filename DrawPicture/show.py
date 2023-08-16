@@ -1,6 +1,10 @@
+import copy
+
 import numpy as np
 from matplotlib import pyplot as plt, cm
-from CONTROL.Global import cnl, XLIST, RESULT_FIGSAVE_PATH, rgb_word, color_word, COLORLIST_RGB
+from numpy import where
+
+from CONTROL.Global import cnl, XLIST, RESULT_FIGSAVE_PATH, rgb_word, color_word, COLORLIST_RGB, COLORLIST_NAME
 
 fig_save_path=RESULT_FIGSAVE_PATH
 # labels=np.array([u"推进","KDA",u"生存",u"团战",u"发育",u"输出"])
@@ -30,6 +34,7 @@ fig_save_path=RESULT_FIGSAVE_PATH
 #
 # plt.show()
 def draw_demo2():
+    #纯无用
     # import pandas as pd
     # import matplotlib.pyplot as plt
     # import numpy as np
@@ -87,6 +92,7 @@ def draw_demo2():
     plt.legend(["弓长张", "口天吴"], loc='best')
     plt.show()
 def draw_demo1(X,color):
+    # X 已经被压缩，本函数生成各个颜色的雷达图
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     labels=np.array(XLIST[:7]+["抄袭次数"])
 
@@ -144,16 +150,17 @@ def draw_demo3(XALL,colorall):
     plt.savefig(fig_save_path+"雷达图合并版"+".png")
     plt.show()
 
-def draw_demo4(ifshowmax=1):
+def draw_demo4(num_all,ifshowmax=1):
     #各颜色各不同分段占比
     xl=['blue','red','orange','green']
-    blue=[50, 14, 6, 1]
+    blue=num_all[0]
     bc=["#1976D2","#2196F3","#00BCD4","#BBDEFB"]
-    red=[114, 77, 63, 0]
+    red=num_all[1]
     rc=["#C2185B","#E91E63","#FF5252","#F8BBD0"]
-    orange=[30, 52, 409, 29]
+    orange=num_all[2]
     oc=["#F57C00","#FF9800","#FFC107","#FFE0B2"]
-    green=[81, 89, 376, 16]
+    green=num_all[3]
+    print(green)
     gc=["#388E3C","#4CAF50","#8BC34A","#C8E6C9"]
     all= [blue,red,orange,green]
     colorss = [bc,rc,oc,gc]
@@ -191,16 +198,17 @@ def draw_demo4(ifshowmax=1):
     fig.show()
 
 
-def draw_demo5(ifshowmax=0):
+def draw_demo5(num_all,ifshowmax=0):
     #各个颜色本身各分段占比
     xl = ['blue', 'red', 'orange', 'green']
-    blue = [50, 14, 6, 1]
+    blue = num_all[0]
     bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
-    red = [114, 77, 63, 0]
+    red = num_all[1]
     rc = ["#C2185B", "#E91E63", "#FF5252", "#F8BBD0"]
-    orange = [30, 52, 409, 29]
+    orange = num_all[2]
     oc = ["#F57C00", "#FF9800", "#FFC107", "#FFE0B2"]
-    green = [81, 89, 376, 16]
+    green = num_all[3]
+    print(green)
     gc = ["#388E3C", "#4CAF50", "#8BC34A", "#C8E6C9"]
     all = [blue, red, orange, green]
     colorss = [bc, rc, oc, gc]
@@ -232,20 +240,20 @@ def draw_demo5(ifshowmax=0):
 
 
 
-def draw_demo6():
+def draw_demo6(num_all):
     import matplotlib.pyplot as plt
     from matplotlib.patches import ConnectionPatch
     import numpy as np
     #作用:生成某一分数段各个颜色比例
     score_color=["#FBC02D","#FFEB3B","#CDDC39","#FFF9C4"]
     xl = ['blue', 'red', 'orange', 'green']
-    blue = [50, 14, 6, 1]
+    blue = num_all[0]
     bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
-    red = [114, 77, 63, 0]
+    red = num_all[1]
     rc = ["#C2185B", "#E91E63", "#FF5252", "#F8BBD0"]
-    orange = [30, 52, 409, 29]
+    orange = num_all[2]
     oc = ["#F57C00", "#FF9800", "#FFC107", "#FFE0B2"]
-    green = [81, 89, 376, 16]
+    green = num_all[3]
     gc = ["#388E3C", "#4CAF50", "#8BC34A", "#C8E6C9"]
     all = [blue, red, orange, green]
     colorss = [bc, rc, oc, gc]
@@ -331,19 +339,19 @@ def draw_demo6():
         fig.show()
 
 
-def draw_demo7():
+def draw_demo7(num_all):
     #这个是饼-->颜色，bar：分段
     import matplotlib.pyplot as plt
     from matplotlib.patches import ConnectionPatch
     import numpy as np
     xl = ['blue', 'red', 'orange', 'green']
-    blue = [50, 14, 6, 1]
+    blue = num_all[0]
     bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
-    red = [114, 77, 63, 0]
+    red = num_all[1]
     rc = ["#C2185B", "#E91E63", "#FF5252", "#F8BBD0"]
-    orange = [30, 52, 409, 29]
+    orange = num_all[2]
     oc = ["#F57C00", "#FF9800", "#FFC107", "#FFE0B2"]
-    green = [81, 89, 376, 16]
+    green = num_all[3]
     gc = ["#388E3C", "#4CAF50", "#8BC34A", "#C8E6C9"]
     all = [blue, red, orange, green]
     colorss = [bc, rc, oc, gc]
@@ -424,7 +432,33 @@ def draw_demo7():
         print("from draw7",fig_save_path+"pie-bar"+labels[l]+"各分段")
         plt.savefig(fig_save_path+"pie-bar"+labels[l]+"各分段")
         fig.show()
-draw_demo4()
-draw_demo5()
-draw_demo6()
-draw_demo7()
+# draw_demo4()
+# draw_demo5()
+# draw_demo6()
+# draw_demo7()
+def draw_demo0(X=None,yhat=None,listnum=None):
+    rgb = COLORLIST_RGB
+    print("in draw0")
+    for i in range(0,4):
+        row_ix=where(yhat==i)
+        color_i=rgb[listnum.index(row_ix[0].size)]
+        fig=plt.figure(figsize=(40, 10), dpi=100)
+
+        myxlabel =copy.deepcopy(XLIST[0:8])
+        myxlabel[6]='和最早提交者时间差'
+        for j in row_ix[0]:
+            scores = X[j]
+            #线条
+            plt.plot(myxlabel, scores[:8], c=color_i)
+            #点
+            plt.scatter(myxlabel, scores[:8], c=color_i,marker='*')
+
+        # plt.yticks(y_ticks[::0.1])
+        plt.tick_params(labelsize=30)
+        plt.grid(True, linestyle='--', alpha=0.5)
+        # plt.xlabel("各个维度", fontdict={'size': 40})
+        # plt.ylabel("值", fontdict={'size': 16})
+        plt.title(color_word.get(COLORLIST_NAME[listnum.index(row_ix[0].size)])[0:5]+"学生", fontdict={'size': 40})
+        plt.savefig(fig_save_path+color_word.get(COLORLIST_NAME[listnum.index(row_ix[0].size)])[0:5]+"学生")
+
+        plt.show()
