@@ -4,9 +4,11 @@ import numpy as np
 from matplotlib import pyplot as plt, cm
 from numpy import where
 
-from CONTROL.Global import cnl, XLIST, RESULT_FIGSAVE_PATH, rgb_word, color_word, COLORLIST_RGB, COLORLIST_NAME
+from CONTROL.Global import cnl, XLIST, RESULT_FIGSAVE_PATH, rgb_word, color_word, COLORLIST_RGB, COLORLIST_NAME, \
+    std_names
 
 fig_save_path=RESULT_FIGSAVE_PATH
+std_labels=std_names
 # labels=np.array([u"推进","KDA",u"生存",u"团战",u"发育",u"输出"])
 # stats=[83, 61, 95, 67, 76, 88]
 # # 画图数据准备，角度、状态值
@@ -260,7 +262,7 @@ def draw_demo6(num_all):
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     # make figure and assign axis objects
     for l in range(0, 4):
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 10))
         fig.subplots_adjust(wspace=0.3)
 
     # pie chart parameters---->各分段人总数
@@ -278,14 +280,15 @@ def draw_demo6(num_all):
                  'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
                  }
         wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%',colors=score_color,
-                         labels=labels, explode=explode,radius=1.5,textprops=textprops,startangle=-360*sum(overall_ratios[0:l])/sum(overall_ratios))
+                         labels=labels, explode=explode,radius=1.5,textprops=textprops,startangle=-360*sum(overall_ratios[0:l])/sum(overall_ratios),
+                             labeldistance=1.05)
         ax1.set_title("总成绩分数段",pad=80,fontsize=40)
 
 
 
 
     # bar chart parameters------>该分段人的比例
-        age_labels = ['抄袭作业型', '学习困难型', '游刃有余型', '学习努力型']
+        age_labels = std_labels
         bottom = 1
         width = .2
     # age_ratios = [all[0][0]/overall_ratios[0], all[1][0]/overall_ratios[0],all[2][0]/overall_ratios[0],all[3][0]/overall_ratios[0]]
@@ -358,7 +361,7 @@ def draw_demo7(num_all):
     plt.rcParams['font.family'] = 'Microsoft YaHei'
     # make figure and assign axis objects
     for l in range(0,4):
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 10))
         fig.subplots_adjust(wspace=0.3)
         overall_ratios = [0, 0, 0, 0]
         for j in range(len(all)):
@@ -366,7 +369,7 @@ def draw_demo7(num_all):
     # pie chart parameters---->各颜色人数
 
 
-        labels = ['蓝色', '红色', '橙色', '绿色']
+        labels = std_labels
         explode = [0.001, 0.001, 0.001, 0.001]
     # rotate so that first wedge is split by the x-axis
     # angle = -180 * overall_ratios[0]
@@ -377,7 +380,8 @@ def draw_demo7(num_all):
         wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%',
                          labels=labels, explode=explode,colors=COLORLIST_RGB,
                              textprops=textprops,radius=1.5,
-                             startangle=-360*sum(overall_ratios[0:l])/sum(overall_ratios))
+                             startangle=-360*sum(overall_ratios[0:l])/sum(overall_ratios),
+                             labeldistance=1.05)
         ax1.set_title("总人数颜色分布", pad=80, fontsize=40)
 
 
@@ -445,7 +449,9 @@ def draw_demo0(X=None,yhat=None,listnum=None):
         fig=plt.figure(figsize=(40, 10), dpi=100)
 
         myxlabel =copy.deepcopy(XLIST[0:8])
+
         myxlabel[6]='和最早提交者时间差'
+        myxlabel[7] = '抄袭次数'
         for j in row_ix[0]:
             scores = X[j]
             #线条

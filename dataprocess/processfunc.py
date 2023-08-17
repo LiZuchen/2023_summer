@@ -168,6 +168,16 @@ def shorttail_exp(column,number):
         print(len(column),len(timespass_std))
     modifycol(column, timespass_std, number)
 
+def unknown(column,number):
+    data = [tmp[number] for tmp in column]
+    if CONTROL.Global.RAWFIGSHOW:
+        i=range(len(data))
+        pyplot.scatter(i,data)
+        pyplot.title(CONTROL.Global.XLIST[number],fontproperties="STSong")
+        pyplot.savefig(CONTROL.Global.RAW_FIGSAVE_PATH+CONTROL.Global.XLIST[number])
+        pyplot.show()
+
+
 
 def check_col(column):
     for i in column:
@@ -191,8 +201,8 @@ def merge(column):
     #xnum
     if CONTROL.Global.PROCESS_DETAIL:
         print("学号+题目号码->学号 开始合并")
-    adw=[3,4,5,6]
-    anti_adw=[1,2]
+    adw=[3,4]
+    anti_adw=[0,1,2,5]
     # column=col_FACtime(column)
 
     re=HashMap()
@@ -358,6 +368,10 @@ def process(column):
     if CONTROL.Global.PROCESS_DETAIL:
         print("开始预处理：标准化copytimes")
     MinMaxScaler_use(column, LIST.index("copy"))
+
+    if CONTROL.Global.PROCESS_DETAIL:
+        print("开始预处理：通过率")
+    unknown(column, LIST.index("通过率"))
 
     return column
 
