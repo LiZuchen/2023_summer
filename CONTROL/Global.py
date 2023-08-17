@@ -1,7 +1,7 @@
 
 from dataprocess.hash import HashMap
 #
-version="1.1.2"
+version="1.1.9"
 #output control
 PROCESS_DETAIL=1
 SUBTIME_DATAIL=0

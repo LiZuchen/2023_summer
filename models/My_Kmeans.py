@@ -130,9 +130,9 @@ def my_kmeans(X=None, copy=None):
     draw_demo6(num_all)
     draw_demo7(num_all)
     # draw2维图像
-    # for i in range(8):
-    #     for j in range(i + 1, 8):
-    #         draw2(X, yhat, clusters, i, j, listnum)
+    for i in range(8):
+        for j in range(i + 1, 8):
+            draw2(X, yhat, clusters, i, j, listnum)
 
 
 def resultshow(stdlist, listnum, copy):
