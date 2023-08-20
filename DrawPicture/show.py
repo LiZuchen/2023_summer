@@ -107,7 +107,7 @@ def draw_demo1(X,color):
     angles=np.concatenate((angles,[angles[0]]))
 
     # ⽤Matplotlib画蜘蛛图
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10,10),dpi=200)
     ax = fig.add_subplot(111, polar=True)
     ax.plot(angles, stats, 'o-', linewidth=2,color=color) # 连线
     ax.fill(angles, stats, alpha=0.25,c=color) # 填充
@@ -131,7 +131,7 @@ def draw_demo3(XALL,colorall):
     angles=np.linspace(0, 2*np.pi, len(labels), endpoint=False)
     labels = np.concatenate((labels, [labels[0]]))
         # ⽤Matplotlib画蜘蛛图
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10,10),dpi=200)
     ax = fig.add_subplot(111, polar=True)
     angles = np.concatenate((angles, [angles[0]]))
     for i in range(len(XALL)):
@@ -149,6 +149,7 @@ def draw_demo3(XALL,colorall):
 
     ax.set_rgrids([0.2,0.4,0.6,0.8,1.0],fontsize = 18)
     plt.title("雷达图合并版", fontsize=40, pad=20)
+    plt.legend()
     plt.savefig(fig_save_path+"雷达图合并版"+".png")
     plt.show()
 
@@ -167,7 +168,7 @@ def draw_demo4(num_all,ifshowmax=1):
     all= [blue,red,orange,green]
     colorss = [bc,rc,oc,gc]
     plt.rcParams['font.family'] = 'Microsoft YaHei'
-    fig=plt.figure(figsize=(20, 20))
+    fig=plt.figure(figsize=(20, 20),dpi=200)
     # fig, axes = plt.subplots(2, 2)
     # ax1 = axes[0, 0]
     # ax2 = axes[0, 1]
@@ -218,7 +219,7 @@ def draw_demo5(num_all,ifshowmax=0):
 
     for i in range(0,len(all)):
          # 将画布设定为正方形，则绘制的饼图是正圆
-        fig = plt.figure(figsize=(10, 10))
+        fig = plt.figure(figsize=(10, 10),dpi=200)
         ax=fig.add_subplot(111)
 
         label = ['0-9分', '10-19分', '20-29分','30分及以上']  # 定义饼图的标签，标签是列表
@@ -440,13 +441,54 @@ def draw_demo7(num_all):
 # draw_demo5()
 # draw_demo6()
 # draw_demo7()
+def draw_demo8(num_all):
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import ConnectionPatch
+    import numpy as np
+    xl = ['blue', 'red', 'orange', 'green']
+    blue = num_all[0]
+    bc = ["#1976D2", "#2196F3", "#00BCD4", "#BBDEFB"]
+    red = num_all[1]
+    rc = ["#C2185B", "#E91E63", "#FF5252", "#F8BBD0"]
+    orange = num_all[2]
+    oc = ["#F57C00", "#FF9800", "#FFC107", "#FFE0B2"]
+    green = num_all[3]
+    gc = ["#388E3C", "#4CAF50", "#8BC34A", "#C8E6C9"]
+    all = [blue, red, orange, green]
+    colorss = [bc, rc, oc, gc]
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+    # make figure and assign axis objects
+    l=0
+    fig, ax1= plt.subplots(1, 1, figsize=(10, 10))
+    fig.subplots_adjust(wspace=0.3)
+    overall_ratios = [0, 0, 0, 0]
+    for j in range(len(all)):
+        overall_ratios[j] = sum(all[j])
+        # pie chart parameters---->各颜色人数
+    labels = std_labels
+    explode = [0.001, 0.001, 0.001, 0.001]
+    # rotate so that first wedge is split by the x-axis
+    # angle = -180 * overall_ratios[0]
+    textprops = {'color': 'k',  # 文本颜色
+                     'fontsize': 18,  # 文本大小
+                     'fontfamily': 'Microsoft JhengHei',  # 设置微软雅黑字体
+                     }
+    wedges, *_ = ax1.pie(overall_ratios, autopct='%1.1f%%',
+                             labels=labels, explode=explode, colors=COLORLIST_RGB,
+                             textprops=textprops,
+                             startangle=-360 * sum(overall_ratios[0:l]) / sum(overall_ratios),
+                             labeldistance=1.05)
+    ax1.set_alpha(0.8)
+    ax1.set_title("总人数颜色分布", fontsize=30)
+    plt.savefig(fig_save_path+"总人数颜色分布")
+    plt.show()
 def draw_demo0(X=None,yhat=None,listnum=None):
     rgb = COLORLIST_RGB
     print("in draw0")
     for i in range(0,4):
         row_ix=where(yhat==i)
         color_i=rgb[listnum.index(row_ix[0].size)]
-        fig=plt.figure(figsize=(40, 10), dpi=100)
+        fig=plt.figure(figsize=(40, 10), dpi=200)
 
         myxlabel =copy.deepcopy(XLIST[0:8])
 
@@ -468,3 +510,80 @@ def draw_demo0(X=None,yhat=None,listnum=None):
         plt.savefig(fig_save_path+color_word.get(COLORLIST_NAME[listnum.index(row_ix[0].size)])[0:5]+"学生")
 
         plt.show()
+
+
+def draw9():
+    TSSE=[143.78 ,121.84 ,104.99 ,95.98 ,89.99,84.16, 79.94]
+    K=[2,3,4,5,6,7,8]
+    # 中文和负号正常显示
+
+    # plt.rcParams['font.sans-serif'] = 'YaHei'
+    #
+    # plt.rcParams['axes.unicode_minus'] = False
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+    # 设置绘画风格
+    fig=plt.figure(dpi=200)
+    plt.style.use('ggplot')
+
+    # 绘制K的个数与TSSE的关系
+
+    linewidth = 4
+    plt.plot([3,3], [121.84 ,104.99], linestyle='dashed', color='black',linewidth=1)
+    plt.plot([3, 4], [104.99, 104.99], linestyle='dashed', color='black',linewidth=1)
+
+    plt.plot([4, 4], [104.99, 95.98 ] , linestyle='dashed', color='black',linewidth=1)
+    plt.plot([4, 5], [95.98, 95.98 ], linestyle='dashed', color='black',linewidth=1)
+
+    plt.plot(K, TSSE, 'r*-',markersize=10)
+    plt.title("肘部法确定簇数 n_cluster",fontsize=20)
+    x0=4
+    y0=104.99
+    show_spot = '    n_cluster=' + str(x0) + '时,梯度突然减小'
+    plt.annotate(show_spot, xy=(x0, y0), xytext=(x0, y0),fontsize=16)
+    # plt.annotate([4],[104.99],'b*')
+    # plt.plot([4],[104.99],'b*',)
+    plt.xlabel('簇的个数')
+    plt.ylabel('簇内离差平方和之和')
+
+    plt.savefig(fig_save_path+"肘部法确定簇数n_cluster")
+    plt.show()
+draw9()
+def draw10():
+    TSSE=[ 0.36587389355502103,0.33558344510943133,
+           0.21141218071830625, 0.1719767066860857,
+           0.17215195140605322 ,0.19079074848753422,
+           0.19867092360746438 ]
+    K=[2,3,4,5,6,7,8]
+    # 中文和负号正常显示
+
+    # plt.rcParams['font.sans-serif'] = 'YaHei'
+    #
+    # plt.rcParams['axes.unicode_minus'] = False
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+    # 设置绘画风格
+    fig=plt.figure(dpi=200)
+    plt.style.use('ggplot')
+
+    # 绘制K的个数与TSSE的关系
+
+    linewidth = 4
+    # plt.plot([3,3], [121.84 ,104.99], linestyle='dashed', color='black',linewidth=1)
+    # plt.plot([3, 4], [104.99, 104.99], linestyle='dashed', color='black',linewidth=1)
+    #
+    # plt.plot([4, 4], [104.99, 95.98 ] , linestyle='dashed', color='black',linewidth=1)
+    # plt.plot([4, 5], [95.98, 95.98 ], linestyle='dashed', color='black',linewidth=1)
+
+    plt.plot(K, TSSE, 'r*-',markersize=10)
+    plt.title("轮廓系数确定簇数 n_cluster",fontsize=20)
+    x0=4
+    y0= 0.21141218071830625
+    show_spot = '    n_cluster=' + str(x0) + '时,梯度突然减小'
+    plt.annotate(show_spot, xy=(x0, y0), xytext=(x0, y0),fontsize=16)
+    # plt.annotate([4],[104.99],'b*')
+    # plt.plot([4],[104.99],'b*',)
+    plt.xlabel('簇的个数')
+    plt.ylabel('轮廓系数')
+
+    plt.savefig(fig_save_path+"轮廓系数确定簇数n_cluster")
+    plt.show()
+

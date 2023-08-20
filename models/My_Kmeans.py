@@ -5,8 +5,9 @@ from numpy import unique, where
 from sklearn import metrics
 from sklearn.cluster import KMeans
 import CONTROL
-from CONTROL.Global import FIGTITLESHOW
-from DrawPicture.show import draw_demo1, draw_demo3, draw_demo0, draw_demo4, draw_demo5, draw_demo7, draw_demo6
+from CONTROL.Global import FIGTITLESHOW, std_names, picout
+from DrawPicture.show import draw_demo1, draw_demo3, draw_demo0, draw_demo4, draw_demo5, draw_demo7, draw_demo6, \
+    draw_demo8
 from Read.READtest import readtest
 from dataprocess.hash import HashMap
 from dataprocess.processfunc import process_xall
@@ -59,10 +60,19 @@ def my_kmeans(X=None, copy=None):
         model.fit(X[:, :8])
     # 模型拟合
 
+
+
+    # 计算整个聚类的 Silhouette 统计量
+
     # 为每个示例分配一个集群
     yhat = model.predict(X[:, :8])
     if CONTROL.Global.SCOREON:
-        print(ways, metrics.calinski_harabasz_score(X[:, :8], yhat))
+        print(CONTROL.Global.KMEANSCLUSTER)
+        print("calinski_harabasz_score",metrics.calinski_harabasz_score(X[:, :8], yhat))
+        print("silhouette_score",metrics.silhouette_score(X[:, :8], yhat))
+        print('Distortion: %.2f' % model.inertia_)
+        print("Davies-Bouldin Index: ",metrics.davies_bouldin_score(X[:, :8], yhat))
+        print(metrics.silhouette_score(X, model.labels_))
     # 检索唯一群集
     clusters = unique(yhat)
     if CONTROL.Global.PROCESS_DETAIL:
@@ -96,43 +106,43 @@ def my_kmeans(X=None, copy=None):
     # stdlist按乱序装入各个学生的ID
     # listnum 指定各人数对应的颜色
     # 结果展示
-    num_all=resultshow(stdlist, listnum, copy)
+    if picout:
+        num_all=resultshow(stdlist, listnum, copy)
 
-    xall_average=[]
-    color_all=[]
-    for cluster in clusters:
-        rgb = CONTROL.Global.COLORLIST_RGB
-        # rgb 为 蓝 红 橙 绿
-        k = 0
-        row_ix = where(yhat == cluster)
-        # 创建这些样本的散布
-        # pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num], c=rgb[listnum.index(row_ix[0].size)])
-        k += 1
-        x_average=[]
-        for i in range(8):
-            x_sum=0
-            for j in row_ix[0]:
-                x_sum+=X[j,i]/row_ix[0].size
-            x_average.append(x_sum)
+        xall_average=[]
+        color_all=[]
+        for cluster in clusters:
+            rgb = CONTROL.Global.COLORLIST_RGB
+            # rgb 为 蓝 红 橙 绿
+            k = 0
+            row_ix = where(yhat == cluster)
+            # 创建这些样本的散布
+            # pyplot.scatter(X[row_ix, x_num], X[row_ix, y_num], c=rgb[listnum.index(row_ix[0].size)])
+            k += 1
+            x_average=[]
+            for i in range(8):
+                x_sum=0
+                for j in row_ix[0]:
+                    x_sum+=X[j,i]/row_ix[0].size
+                x_average.append(x_sum)
         # draw_demo1(x_average,rgb[listnum.index(row_ix[0].size)])
-        xall_average.append(x_average)
-        color_all.append(rgb[listnum.index(row_ix[0].size)])
-    process_xall(xall_average)
-    for i in range(len(xall_average)):
-        draw_demo1(xall_average[i],color_all[i])
+            xall_average.append(x_average)
+            color_all.append(rgb[listnum.index(row_ix[0].size)])
+        process_xall(xall_average)
+        for i in range(len(xall_average)):
+            draw_demo1(xall_average[i],color_all[i])
 
-    draw_demo3(xall_average,color_all)
-
-    draw_demo0(X,yhat,listnum)
-
-    draw_demo4(num_all)
-    draw_demo5(num_all)
-    draw_demo6(num_all)
-    draw_demo7(num_all)
+        draw_demo3(xall_average,color_all)
+        draw_demo0(X,yhat,listnum)
+        draw_demo4(num_all)
+        draw_demo5(num_all)
+        draw_demo6(num_all)
+        draw_demo7(num_all)
+        draw_demo8(num_all)
     # draw2维图像
-    for i in range(8):
-        for j in range(i + 1, 8):
-            draw2(X, yhat, clusters, i, j, listnum)
+        for i in range(8):
+            for j in range(i + 1, 8):
+                draw2(X, yhat, clusters, i, j, listnum)
 
 
 def resultshow(stdlist, listnum, copy):
@@ -215,6 +225,7 @@ def resultshow(stdlist, listnum, copy):
         pyplot.bar(range(0, CONTROL.Global.SCOREAREAS), rinum, alpha=1, width=1, color='r')
         pyplot.show()
 
+        pyplot.rcParams['font.family'] = 'Microsoft YaHei'
         # blue
         first = [0 for i in range(CONTROL.Global.SCOREAREAS)]
         # red
@@ -247,10 +258,11 @@ def resultshow(stdlist, listnum, copy):
         x = np.arange(len(labels))  # x轴刻度标签位置
         width = 0.2  # 柱子的宽度
         # 计算每个柱子在x轴上的位置，保证x轴刻度标签居中
-        pyplot.bar(x - 1.5 * width, first, width, label='1', color=rgb[0])
-        pyplot.bar(x - 0.5 * width, second, width, label='2', color=rgb[1])
-        pyplot.bar(x + 0.5 * width, third, width, label='3', color=rgb[2])
-        pyplot.bar(x + 1.5 * width, fourth, width, label='4', color=rgb[3])
+
+        pyplot.bar(x - 1.5 * width, first, width, label=std_names[0], color=rgb[0],alpha=0.9)
+        pyplot.bar(x - 0.5 * width, second, width, label=std_names[1], color=rgb[1],alpha=0.9)
+        pyplot.bar(x + 0.5 * width, third, width, label=std_names[2], color=rgb[2],alpha=0.9)
+        pyplot.bar(x + 1.5 * width, fourth, width, label=std_names[3], color=rgb[3],alpha=0.9)
         pyplot.ylabel('人数', fontproperties="STSong", fontsize=16)
         pyplot.title('人数-成绩表', fontproperties="STSong", fontsize=16)
         #设置标签序列和对应标签
