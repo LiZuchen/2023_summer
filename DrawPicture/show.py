@@ -547,7 +547,7 @@ def draw9():
 
     plt.savefig(fig_save_path+"肘部法确定簇数n_cluster")
     plt.show()
-draw9()
+
 def draw10():
     TSSE=[ 0.36587389355502103,0.33558344510943133,
            0.21141218071830625, 0.1719767066860857,
